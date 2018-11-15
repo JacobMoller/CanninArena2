@@ -1,0 +1,6 @@
+Danmark,København
+Sverige,Stockholm
+Norge,Oslo
+Østrig,Wien
+Finland,Helsinki
+Frankrig,Paris
