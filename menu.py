@@ -8,8 +8,11 @@ import pygame
 import time
 pygame.init()
 
-displayWidth = 500
-displayHeight = 650
+infoObject = pygame.display.Info()
+displayWidth = infoObject.current_w
+displayHeight = int(infoObject.current_h * 0.9)
+gameWidth = int(infoObject.current_w * 0.35)
+gameHeight = int(infoObject.current_h * 0.9)
 
 black = (0,0,0)
 white = (255,255,255)
@@ -19,14 +22,16 @@ gameDisplay = pygame.display.set_mode((displayWidth,displayHeight))
 pygame.display.set_caption('CanninArena 2')
 clock = pygame.time.Clock()
 
-backgroundImg = pygame.image.load('Art/baggrund/CanninArenaBackground-01.png')
-gameDisplay.blit(backgroundImg,(x,y))
+bgImg = pygame.image.load('Art/background/arena_bg.png')
+bgImg = pygame.transform.scale(bgImg, (gameWidth, gameHeight))
 
-playerImg = pygame.image.load('Art/Canin/Cannin32x32.png')
-playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 playerWidth = 100
+playerImg = pygame.image.load('Art/cannin/Cannin_32x32.png')
+playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 
 def player(x,y):
+    gameDisplay.fill(black)
+    gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),0))
     gameDisplay.blit(playerImg,(x,y))
 
 def textObject(text, font):
@@ -46,9 +51,8 @@ def messageDisplay(text):
     game_loop()
 
 def game_loop():
-
-    x = (displayWidth * 0.45)
-    y = (displayHeight * 0.8)
+    x = (displayWidth * 0.50 - (playerWidth/2))
+    y = (gameHeight * 0.85)
 
     x_change = 0
 
@@ -61,30 +65,26 @@ def game_loop():
                 gameExit = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    x_change += -4
+                    x_change += -15
                 if event.key == pygame.K_d:
-                    x_change += 4
+                    x_change += 15
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
-                    x_change += 4
+                    x_change += 15
                 if event.key == pygame.K_d:
-                    x_change += -4
-        if x > displayWidth - playerWidth:
-            x = displayWidth - playerWidth
-        elif x < 0:
-            x = 0
+                    x_change += -15
+
+        if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
+            x = (displayWidth * 0.5 + gameWidth * 0.5  - playerWidth)
+        elif x < (displayWidth * 0.5 - gameWidth * 0.5):
+            x = (displayWidth * 0.5 - gameWidth * 0.5)
         else:
             x += x_change
-        
-        gameDisplay.fill(red)
+
         player(x,y)
-    
         
-            
         pygame.display.update()
-        clock.tick(120)
-
-
+        clock.tick(240)
 
 game_loop()
 pygame.quit()
