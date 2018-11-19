@@ -10,6 +10,7 @@
 #-------------------------------------------------------------------------------
 import pygame
 import random
+import math
 pygame.init()
 
 #Only works with 4 choices atm
@@ -66,6 +67,16 @@ def GeographyQ(choices = 4):
     print(a)
     print(c)
 
+def MathQ():
+    temp1 = random.randint(0,30)
+    temp2 = random.randint(0,4-math.ceil(temp1/10))
+    print(temp1 , "   " ,temp2)
+    a = temp1 * temp2
+    t = temp1 + " * " + temp2 + " = ?"
+    c = []
+    c.append(a)
+    c.append(random.randint(0, temp1))
 
-GeographyQ()
+
+MathQ()
 input()
