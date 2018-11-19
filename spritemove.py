@@ -38,22 +38,8 @@ def player(x,y):
     gameDisplay.fill(black)
     gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),0))
     gameDisplay.blit(playerImg,(x,y))
-
-def textObject(text, font):
-    textSurface = font.render(text, True, white)
-    return textSurface, textSurface.get_rect()
-
-def messageDisplay(text):
-    largeText = pygame.font.Font('Arial.ttf', 115)
-    TextSurface, TextRectangle = textObject(text, largeText)
-    TextRectangle.center = ((displayWidth/2),(displayHeight/2))
-    gameDisplay.blit(TextSurface, TextRectangle)
-
-    pygame.display.update()
-
-    time.sleep(2)
-    
-    game_loop()
+    fox = makeSprite('Art/fox/fox_64x24.png')
+    showSprite(fox)
 
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
@@ -94,6 +80,7 @@ def game_loop():
         player(x,y)
         pygame.display.update()
         clock.tick(120)
+        
 game_loop()
 pygame.quit()
 quit()
