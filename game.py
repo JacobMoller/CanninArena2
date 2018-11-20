@@ -38,7 +38,6 @@ def DanishQ(choices = 4):
     t = "Hvilken ordklasse er " + q + "?"
 
     print(t) #The text of the question (e.g. "Hvilken ordklasse er Stol?")
-    print(q) #The question (e.g "Stol")
     print(a) #The correct answer (e.g "Substantiv")
     print(c) #Array of choices (e.g "Adjektiv","Verbum","Substantiv","Præposition")
 
@@ -63,19 +62,31 @@ def GeographyQ(choices = 4):
     t = "Hvad er hovedstaden i " + q + "?"
 
     print(t)
-    print(q)
     print(a)
     print(c)
 
 def MathQ():
     temp1 = random.randint(0,30)
     temp2 = random.randint(0,4-math.ceil(temp1/10))
+    if (temp2 == 1):
+        temp2 = 6
+        if(temp1 > 15):
+            temp2 = 3
     print(temp1 , "   " ,temp2)
     a = temp1 * temp2
-    t = temp1 + " * " + temp2 + " = ?"
+    t = str(temp1) + " * " + str(temp2) + " = ?"
     c = []
     c.append(a)
-    c.append(random.randint(0, temp1))
+    c.append(random.randint(1, abs(a-1)))
+    c.append(random.randint(a+2, (a+1)*2+temp1+2))
+    c.append(temp1+temp2)
+    if(c[3]==1):
+        c[3] = c[2]*3
+    #random.shuffle(c)
+
+    print(t)
+    print(a)
+    print(c)
 
 
 MathQ()
