@@ -117,7 +117,8 @@ def game_loop():
             elif x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2150/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2622/3000*100)):
                 print("3")
             else:
-                print("jort")
+                #DIE
+                print("dead")
         
             
         #Updates player and game screen
