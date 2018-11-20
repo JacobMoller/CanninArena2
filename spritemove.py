@@ -6,7 +6,6 @@
 #################################
 import pygame
 import time
-import random
 pygame.init()
 
 #Define screen and game size
@@ -35,39 +34,16 @@ playerWidth = 64
 playerImg = pygame.image.load('Art/cannin/Cannin_32x32.png')
 playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 
-tunnelImg = pygame.image.load('Art/background/tunnel_bg.png')
-tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, 200))
-
-def player(x,y, bg_movement):
+def player(x,y):
     gameDisplay.fill(black)
-    gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),bg_movement))
+    gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),0))
     gameDisplay.blit(playerImg,(x,y))
-
-def element(change_movement):
-    gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
-
-def textObject(text, font):
-    textSurface = font.render(text, True, white)
-    return textSurface, textSurface.get_rect()
-
-def messageDisplay(text):
-    largeText = pygame.font.Font('Arial.ttf', 115)
-    TextSurface, TextRectangle = textObject(text, largeText)
-    TextRectangle.center = ((displayWidth/2),(displayHeight/2))
-    gameDisplay.blit(TextSurface, TextRectangle)
-
-    pygame.display.update()
-
-    time.sleep(2)
-    
-    game_loop()
+    fox = makeSprite('Art/fox/fox_64x24.png')
+    showSprite(fox)
 
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
-    change_movement = random.randint(-2000, 0)
-    print(change_movement)
-    bg_movement = 0
 
     x_change = 0
 
@@ -101,13 +77,10 @@ def game_loop():
             x += x_change
             
         #Updates player and game screen
-        change_movement += 10
-        print(change_movement)
-        bg_movement += 0
-        player(x,y, bg_movement)
-        element(change_movement)
+        player(x,y)
         pygame.display.update()
         clock.tick(120)
+        
 game_loop()
 pygame.quit()
 quit()

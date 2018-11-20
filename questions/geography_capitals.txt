@@ -4,3 +4,5 @@ Norge,Oslo
 Østrig,Wien
 Finland,Helsinki
 Frankrig,Paris
+Irland,Dublin
+Scotland,Edinburgh
