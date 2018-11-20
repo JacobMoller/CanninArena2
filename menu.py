@@ -35,8 +35,9 @@ playerWidth = 64
 playerImg = pygame.image.load('Art/cannin/Cannin_32x32.png')
 playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 
+tunnel_height = 200
 tunnelImg = pygame.image.load('Art/background/tunnel_bg.png')
-tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, 200))
+tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, tunnel_height))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
@@ -65,12 +66,14 @@ def messageDisplay(text):
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
-    change_movement = random.randint(-2000, 0)
+    change_movement = random.randint(-500, 0)
     print(change_movement)
     bg_movement = 0
 
     x_change = 0
 
+    tunnelCheck = False
+    
     gameExit = False
 
     while not gameExit:
@@ -99,10 +102,27 @@ def game_loop():
             x = (displayWidth * 0.5 - gameWidth * 0.5)
         else:
             x += x_change
+
+        
+        if y < change_movement+tunnel_height and tunnelCheck == False:
+            tunnelCheck = True
+            print("Hej")
+            print((displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)))
+            if x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(897/3000*100)):
+                print("0")
+            elif x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(998/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1513/3000*100)):
+                print("1")
+            elif x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1582/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2053/3000*100)):
+                print("2")
+            elif x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2150/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2622/3000*100)):
+                print("3")
+            else:
+                print("jort")
+        
             
         #Updates player and game screen
-        change_movement += 10
-        print(change_movement)
+        change_movement += 5
+        #print(change_movement)
         bg_movement += 0
         player(x,y, bg_movement)
         element(change_movement)
