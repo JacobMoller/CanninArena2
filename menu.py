@@ -5,9 +5,11 @@
 #   Rasmus Damgaard-Iversen     #
 #################################
 import pygame
+import pygame.freetype
 import time
 import random
 pygame.init()
+pygame.font.init()
 
 #Define screen and game size
 infoObject = pygame.display.Info()
@@ -15,6 +17,7 @@ displayWidth = infoObject.current_w
 displayHeight = int(infoObject.current_h * 0.9)
 gameWidth = int(infoObject.current_w * 0.35)
 gameHeight = int(infoObject.current_h * 0.9)
+
 
 #Define colors with rgb
 black = (0,0,0)
@@ -32,7 +35,7 @@ bgImg = pygame.transform.scale(bgImg, (gameWidth, gameHeight))
 
 #Load player graphics and size
 playerWidth = 64
-playerImg = pygame.image.load('Art/cannin/Cannin_32x32.png')
+playerImg = pygame.image.load('Art/cannin/Skin/cannin_gold.png')
 playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 
 tunnel_height = 200
@@ -51,17 +54,23 @@ def textObject(text, font):
     textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 
-def messageDisplay(text):
-    largeText = pygame.font.Font('Arial.ttf', 115)
-    TextSurface, TextRectangle = textObject(text, largeText)
-    TextRectangle.center = ((displayWidth/2),(displayHeight/2))
-    gameDisplay.blit(TextSurface, TextRectangle)
+def text_objects(text, font):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
+def message_display(text):
+    largeText = pygame.font.Font('freesansbold.ttf',115)
+    TextSurf, TextRect = text_objects(text, largeText)
+    TextRect.center = ((displayWidth/2),(displayHeight/2))
+    gameDisplay.blit(TextSurf, TextRect)
 
     pygame.display.update()
 
     time.sleep(2)
     
-    game_loop()
+
+def crash():
+    message_display('You Crashed')
 
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
@@ -116,6 +125,7 @@ def game_loop():
                 print("2")
             elif x > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2150/3000*100)) and x < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2622/3000*100)):
                 print("3")
+                crash()
             else:
                 #DIE
                 print("dead")
