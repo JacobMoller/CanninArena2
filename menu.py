@@ -26,6 +26,7 @@ red = (255,0,0)
 
 #Define tunnel succes
 tunneldone = 0
+removecount = 0
 
 #Setup Screen Display
 gameDisplay = pygame.display.set_mode((displayWidth,displayHeight))
@@ -119,46 +120,45 @@ def tunnelmessage_display(text, movement, textnumber):
         else:
             textSize = 20
     if textnumber == 2:
-        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*38)
         ycoordinate = movement+(displayHeight/100*5)
         if len(text) > 5:
             textSize = 15
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
         elif len(text) > 12:
             textSize = 10
         else:
             textSize = 20
     if textnumber == 3:
-        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)
         ycoordinate = movement+(displayHeight/100*5)
         if len(text) > 5:
             textSize = 15
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*62)
         elif len(text) > 12:
             textSize = 10
         else:
             textSize = 20
     if textnumber == 4:
-        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*76)
         ycoordinate = movement+(displayHeight/100*5)
         if len(text) > 5:
             textSize = 15
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*78)
         elif len(text) > 12:
             textSize = 10
         else:
             textSize = 20
     if textnumber == 5:
-        print(len(text))
-        xcoordinate = ((displayWidth/2)-(gameWidth/2))
-        ycoordinate = movement+(displayHeight/100*10)
+        xcoordinate = (displayWidth/2)
+        ycoordinate = movement+(displayHeight/100*15)
         if len(text) < 10 and len(text) < 24:
             textSize = 35
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))
         elif len(text) < 25:
             textSize = 20
         else:
-            textSize = 10
+            textSize = 15
     tunnelLargeText = pygame.font.Font('arial.ttf',textSize)
     tunnelTextSurf, tunnelTextRect = text_objects(text, tunnelLargeText)
     tunnelTextRect.center = (xcoordinate,ycoordinate)
@@ -230,12 +230,14 @@ def game_loop():
         element(change_movement)
         if tunneldone == 1:
             message_display("Din første gulerod! :)")
+            removecount +=1
+            remove_message(removecount)
         elif tunneldone == 3:
             message_display("Godt arbejde!")
         tunnelmessage_display("Danmark", change_movement, 1)
         tunnelmessage_display("Sverige", change_movement, 2)
-        tunnelmessage_display("Sverige", change_movement, 3)
-        tunnelmessage_display("Sverige", change_movement, 4)
+        tunnelmessage_display("Norge", change_movement, 3)
+        tunnelmessage_display("Tyskland", change_movement, 4)
         tunnelmessage_display("København er hovedstaden i", change_movement, 5)
         pygame.display.update()
         clock.tick(10)
