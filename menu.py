@@ -9,6 +9,7 @@ import pygame.freetype
 import time
 import random
 import math
+import platform
 pygame.init()
 pygame.font.init()
 
@@ -259,7 +260,11 @@ def game_loop():
 
 #Only works with 4 choices atm
 def DanishQ(choices = 4):
-    f = open("questions\danish_wordclass.txt","r")
+    print(platform.system())
+    if platform.system() == "Windows":
+        f = open("questions\danish_wordclass.txt","r")
+    else:
+        f = open("questions/danish_wordclass.txt","r")
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
@@ -290,7 +295,11 @@ def DanishQ(choices = 4):
 
 #Works with any number of choices
 def GeographyQ(choices = 4):
-    f = open("questions\geography_capitals.txt","r")
+    if platform.system() == "Windows":
+        f = open("questions\geography_capitals.txt","r")
+    else:
+        f = open("questions/geography_capitals.txt","r")
+    
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
