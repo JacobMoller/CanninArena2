@@ -36,9 +36,13 @@ def DanishQ(choices = 4):
     for i in range(0,choices):
         c.append(aList[i])
     t = "Hvilken ordklasse er " + q + "?"
-
+    for i in range(choices):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
+    #return t, a, c
     print(t) #The text of the question (e.g. "Hvilken ordklasse er Stol?")
-    print(a) #The correct answer (e.g "Substantiv")
+    print(a) #The number of the correct answer (e.g "3")
     print(c) #Array of choices (e.g "Adjektiv","Verbum","Substantiv","Præposition")
 
 #Works with any number of choices
@@ -60,7 +64,10 @@ def GeographyQ(choices = 4):
             c.append(qList[tempIndex].split(",")[1])
     random.shuffle(c)
     t = "Hvad er hovedstaden i " + q + "?"
-
+    for i in range(choices):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
     print(t)
     print(a)
     print(c)
@@ -84,13 +91,12 @@ def MathQ():
     if(c[3]==1):
         c[3] = c[2]*3
     random.shuffle(c)
-
+    for i in range(4):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
     print(t)
     print(a)
     print(c)
-
-MathQ()
-GeographyQ()
-DanishQ()
 
 input()
