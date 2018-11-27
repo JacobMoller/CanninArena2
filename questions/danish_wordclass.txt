@@ -1,6 +1,4 @@
 Stol,Substantiv
-Løbe,Verbum
 Spise,Verbum
 Ambulance,Substantiv
 Orange,Adjektiv
-På,Præposition
