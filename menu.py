@@ -7,6 +7,7 @@
 import pygame
 import pygame.freetype
 import time
+import math
 import random
 pygame.init()
 pygame.font.init()
@@ -94,11 +95,12 @@ def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def message_display(text):
-    largeText = pygame.font.Font('arial.ttf',50)
-    TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((displayWidth/2),(gameHeight/2))
-    gameDisplay.blit(TextSurf, TextRect)
+def message_display(text, count):
+    if count < 30:
+        largeText = pygame.font.Font('arial.ttf',50)
+        TextSurf, TextRect = text_objects(text, largeText)
+        TextRect.center = ((displayWidth/2),(gameHeight/2))
+        gameDisplay.blit(TextSurf, TextRect)
     
 def crash():
     message_display('You Crashed')
@@ -107,6 +109,11 @@ def crash():
 def tunneltext_objects(text, font):
     tunneltextSurface = font.render(text, True, black)
     return tunneltextSurface, tunneltextSurface.get_rect()
+
+def openMenu():
+    gameDisplay.fill(red)
+    print("Menu open")
+    pygame.display.update()
 
 def tunnelmessage_display(text, movement, textnumber):
     if textnumber == 1:
@@ -185,16 +192,14 @@ def game_loop():
             if event.type == pygame.K_ESCAPE:
                 menu()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     x_change += -15
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     x_change += 15
-                #if event.key == pygame.K_ESCAPE:
-                    #Open Menu
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     x_change += 15
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     x_change += -15
 
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
@@ -224,14 +229,15 @@ def game_loop():
                 print("dead")
         #Updates player and game screen
         change_movement += 5
-        #print(change_movement)
+        print(change_movement)
+        #int(math.sqrt(math.pow((-500),2)))/100
         bg_movement += 0
         player(x,y, bg_movement)
         element(change_movement)
         if tunneldone == 1:
-            message_display("Din første gulerod! :)")
+            global removecount
             removecount +=1
-            remove_message(removecount)
+            message_display("Din første gulerod! :)", removecount)
         elif tunneldone == 3:
             message_display("Godt arbejde!")
         tunnelmessage_display("Danmark", change_movement, 1)
