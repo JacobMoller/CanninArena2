@@ -102,7 +102,6 @@ def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-<<<<<<< HEAD
 def message_display(text, count):
     if count < 30:
         largeText = pygame.font.Font('arial.ttf',50)
@@ -110,14 +109,12 @@ def message_display(text, count):
         TextRect.center = ((displayWidth/2),(gameHeight/2))
         gameDisplay.blit(TextSurf, TextRect)
     
-=======
 def message_display(text):
     largeText = pygame.font.Font('arial.ttf',50)
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((displayWidth/2),(gameHeight/2))
     gameDisplay.blit(TextSurf, TextRect)
 
->>>>>>> origin/master
 def crash():
     message_display('You Crashed')
 
@@ -260,15 +257,12 @@ def game_loop():
         player(x,y, bg_movement)
         element(change_movement)
         if tunneldone == 1:
-<<<<<<< HEAD
             global removecount
             removecount +=1
             message_display("Din første gulerod! :)", removecount)
-=======
             message_display("Din første gulerod! :)")
             #removecount +=1
             #remove_message(removecount)
->>>>>>> origin/master
         elif tunneldone == 3:
             message_display("Godt arbejde!")
         tunnelmessage_display(choicesQ[0], change_movement, 1)
