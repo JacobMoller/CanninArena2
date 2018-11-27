@@ -40,10 +40,9 @@ def DanishQ(choices = 4):
         if (a==c[i]):
             a = i
     return(t, c, a)
-    #return t, a, c
-    print(t) #The text of the question (e.g. "Hvilken ordklasse er Stol?")
-    print(a) #The number of the correct answer (e.g "3")
-    print(c) #Array of choices (e.g "Adjektiv","Verbum","Substantiv","Præposition")
+    #print(t) #The text of the question (e.g. "Hvilken ordklasse er Stol?")
+    #print(a) #The number of the correct answer (e.g "3")
+    #print(c) #Array of choices (e.g "Adjektiv","Verbum","Substantiv","Præposition")
 
 #Works with any number of choices
 def GeographyQ(choices = 4):
@@ -68,9 +67,6 @@ def GeographyQ(choices = 4):
         if (a==c[i]):
             a = i
     return(t, c, a)
-    print(t)
-    print(a)
-    print(c)
 
 #Works only with 4 choices
 def MathQ():
@@ -95,8 +91,5 @@ def MathQ():
         if (a==c[i]):
             a = i
     return(t, c, a)
-    print(t)
-    print(a)
-    print(c)
 
 input()

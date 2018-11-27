@@ -8,6 +8,7 @@ import pygame
 import pygame.freetype
 import time
 import random
+import math
 pygame.init()
 pygame.font.init()
 
@@ -27,6 +28,11 @@ red = (255,0,0)
 #Define tunnel succes
 tunneldone = 0
 removecount = 0
+
+#Define question variables
+textQ = ""
+choicesQ = []
+answerQ = 0
 
 #Setup Screen Display
 gameDisplay = pygame.display.set_mode((displayWidth,displayHeight))
@@ -69,7 +75,7 @@ def player(x,y, bg_movement):
     gameDisplay.fill(black)
     gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),bg_movement))
     gameDisplay.blit(playerImg,(x,y))
-    
+
 
 def element(change_movement):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
@@ -99,7 +105,7 @@ def message_display(text):
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((displayWidth/2),(gameHeight/2))
     gameDisplay.blit(TextSurf, TextRect)
-    
+
 def crash():
     message_display('You Crashed')
 
@@ -170,15 +176,21 @@ def game_loop():
     change_movement = random.randint(-250, 0) #SKAL ÆNDRES TIL -1500,0
     print(change_movement)
     bg_movement = 0
-
     x_change = 0
+    generateGate = True
+    level = 1
+    global textQ
+    global choicesQ
+    global answerQ
 
     tunnelCheck = False
-    
+
     gameExit = False
 
     while not gameExit:
-            
+        if (generateGate == True):
+            textQ, choicesQ, answerQ = DanishQ()
+            generateGate = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
@@ -204,24 +216,27 @@ def game_loop():
         else:
             x += x_change
 
-        
+
         if y < change_movement+tunnel_height and tunnelCheck == False:
             tunnelCheck = True
+            tunnelChosen = None
             print((displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)))
             if x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(897/3000*100)):
-                print("0")
-                global tunneldone
-                tunneldone += 1
+                tunnelChosen = 0
             elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(998/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1513/3000*100)):
-                print("1")
+                tunnelChosen = 1
             elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1582/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2053/3000*100)):
-                print("2")
+                tunnelChosen = 2
             elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2150/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2622/3000*100)):
-                print("3")
-                crash()
+                tunnelChosen = 3
+            print("Gate: ", tunnelChosen)
+            global tunneldone
+            if(tunnelChosen == answerQ):
+                tunneldone += 1
             else:
-                #DIE
-                print("dead")
+                print("Chose wrong gate: Call crash")
+                crash()
+
         #Updates player and game screen
         change_movement += 5
         #print(change_movement)
@@ -230,17 +245,97 @@ def game_loop():
         element(change_movement)
         if tunneldone == 1:
             message_display("Din første gulerod! :)")
-            removecount +=1
-            remove_message(removecount)
+            #removecount +=1
+            #remove_message(removecount)
         elif tunneldone == 3:
             message_display("Godt arbejde!")
-        tunnelmessage_display("Danmark", change_movement, 1)
-        tunnelmessage_display("Sverige", change_movement, 2)
-        tunnelmessage_display("Norge", change_movement, 3)
-        tunnelmessage_display("Tyskland", change_movement, 4)
-        tunnelmessage_display("København er hovedstaden i", change_movement, 5)
+        tunnelmessage_display(choicesQ[0], change_movement, 1)
+        tunnelmessage_display(choicesQ[1], change_movement, 2)
+        tunnelmessage_display(choicesQ[2], change_movement, 3)
+        tunnelmessage_display(choicesQ[3], change_movement, 4)
+        tunnelmessage_display(textQ, change_movement, 5)
         pygame.display.update()
         clock.tick(10)
+
+#Only works with 4 choices atm
+def DanishQ(choices = 4):
+    f = open("questions\danish_wordclass.txt","r")
+    qList = [] #Makes an empty array
+    for line in f: #Splits each line into a value in our array
+        #Insert each line as value and strips new line
+        qList.append(line.rstrip())
+    #Select a question/answer pair from the list
+    index = random.randint(0, len(qList)-1)
+    #Split the line into question and answer seperately
+    q = qList[index].split(",")[0]
+    a = qList[index].split(",")[1]
+
+    #Almost same proces for the list of answers
+    g = open("questions\danish_wordclass_a.txt","r")
+    aList = []
+    for line in g:
+        aList.append(line.rstrip())
+    random.shuffle(aList)
+    c = []
+    for i in range(0,choices):
+        c.append(aList[i])
+    t = "Hvilken ordklasse er " + q + "?"
+    for i in range(choices):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
+    #print(t) #The text of the question (e.g. "Hvilken ordklasse er Stol?")
+    #print(a) #The number of the correct answer (e.g "3")
+    #print(c) #Array of choices (e.g "Adjektiv","Verbum","Substantiv","Præposition")
+
+#Works with any number of choices
+def GeographyQ(choices = 4):
+    f = open("questions\geography_capitals.txt","r")
+    qList = [] #Makes an empty array
+    for line in f: #Splits each line into a value in our array
+        #Insert each line as value and strips new line
+        qList.append(line.rstrip())
+    #Select a question/answer pair from the list
+    index = random.randint(0, len(qList)-1)
+    #Split the line into question and answer seperately
+    q = qList[index].split(",")[0]
+    a = qList[index].split(",")[1]
+    c = [a]
+    while(len(c)<choices):
+        tempIndex = random.randint(0, len(qList)-1)
+        if(tempIndex != index):
+            c.append(qList[tempIndex].split(",")[1])
+    random.shuffle(c)
+    t = "Hvad er hovedstaden i " + q + "?"
+    for i in range(choices):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
+
+#Works only with 4 choices
+def MathQ():
+    temp1 = random.randint(0,30)
+    temp2 = random.randint(0,4-math.ceil(temp1/10))
+    if (temp2 == 1):
+        temp2 = 6
+        if(temp1 > 15):
+            temp2 = 3
+    print(temp1 , "   " ,temp2)
+    a = temp1 * temp2
+    t = str(temp1) + " * " + str(temp2) + " = ?"
+    c = []
+    c.append(a)
+    c.append(random.randint(1, abs(a-1)))
+    c.append(random.randint(a+2, (a+1)*2+temp1+2))
+    c.append(temp1+temp2)
+    if(c[3]==1):
+        c[3] = c[2]*3
+    random.shuffle(c)
+    for i in range(4):
+        if (a==c[i]):
+            a = i
+    return(t, c, a)
+
 game_loop()
 pygame.quit()
 quit()
