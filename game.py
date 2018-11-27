@@ -65,6 +65,7 @@ def GeographyQ(choices = 4):
     print(a)
     print(c)
 
+#Works only with 4 choices
 def MathQ():
     temp1 = random.randint(0,30)
     temp2 = random.randint(0,4-math.ceil(temp1/10))
@@ -82,12 +83,14 @@ def MathQ():
     c.append(temp1+temp2)
     if(c[3]==1):
         c[3] = c[2]*3
-    #random.shuffle(c)
+    random.shuffle(c)
 
     print(t)
     print(a)
     print(c)
 
-
 MathQ()
+GeographyQ()
+DanishQ()
+
 input()
