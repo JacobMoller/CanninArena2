@@ -107,18 +107,7 @@ def message_display(text, count):
         largeText = pygame.font.Font('arial.ttf',50)
         TextSurf, TextRect = text_objects(text, largeText)
         TextRect.center = ((displayWidth/2),(gameHeight/2))
-        gameDisplay.blit(TextSurf, TextRect)
-<<<<<<< HEAD
-    
-def message_display(text):
-    largeText = pygame.font.Font('arial.ttf',50)
-    TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((displayWidth/2),(gameHeight/2))
-    gameDisplay.blit(TextSurf, TextRect)
-
-=======
-        
->>>>>>> origin/master
+        gameDisplay.blit(TextSurf, TextRect) 
 def crash():
     message_display('You Crashed')
 
@@ -261,24 +250,11 @@ def game_loop():
         player(x,y, bg_movement)
         element(change_movement)
         if tunneldone == 1:
-<<<<<<< HEAD
             global removecount
             removecount +=1
             message_display("Din første gulerod! :)", removecount)
-            message_display("Din første gulerod! :)")
             #removecount +=1
             #remove_message(removecount)
-=======
-
-            global removecount
-            removecount +=1
-            message_display("Din første gulerod! :)", removecount)
-
-            message_display("Din første gulerod! :)")
-            #removecount +=1
-            #remove_message(removecount)
-
->>>>>>> origin/master
         elif tunneldone == 3:
             message_display("Godt arbejde!")
         tunnelmessage_display(choicesQ[0], change_movement, 1)
@@ -303,16 +279,14 @@ def DanishQ(choices = 4):
     #Select a question/answer pair from the list
     index = random.randint(0, len(qList)-1)
     #Split the line into question and answer seperately
-    temp = qList[index].split(",")
-    q = temp[0]
-    a = temp[1]
+    q = qList[index].split(",")[0]
+    a = qList[index].split(",")[1]
 
     #Almost same proces for the list of answers
     if platform.system() == "Windows":
         g = open("questions\danish_wordclass_a.txt","r")
     else:
         g = open("questions/danish_wordclass_a.txt","r")
-    
     aList = []
     for line in g:
         aList.append(line.rstrip())
