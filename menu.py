@@ -30,6 +30,8 @@ red = (255,0,0)
 #Define tunnel succes
 tunneldone = 0
 removecount = 0
+removecrashcount = 0
+levelcompletedcount = 0
 
 #Define question variables
 textQ = ""
@@ -81,8 +83,8 @@ def player(x,y, bg_movement):
 
 def element(change_movement):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
-    gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+140),10))
-    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+140),30))
+    #gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+140),10))
+    #gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+140),30))
     gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
     if tunneldone == 1:
         gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
@@ -108,8 +110,9 @@ def message_display(text, count):
         TextSurf, TextRect = text_objects(text, largeText)
         TextRect.center = ((displayWidth/2),(gameHeight/2))
         gameDisplay.blit(TextSurf, TextRect) 
+
 def crash():
-    message_display('You Crashed')
+    message_display('You Crashed', 1)
 
 
 def tunneltext_objects(text, font):
@@ -186,6 +189,7 @@ def game_loop():
     x_change = 0
     generateGate = True
     level = 1
+    gateCount = 0
     global textQ
     global choicesQ
     global answerQ
@@ -193,11 +197,14 @@ def game_loop():
     tunnelCheck = False
 
     gameExit = False
+    hasCrashed = False
 
     while not gameExit:
+        #Do once
         if (generateGate == True):
             textQ, choicesQ, answerQ = DanishQ()
             generateGate = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
@@ -221,7 +228,6 @@ def game_loop():
         else:
             x += x_change
 
-
         if y < change_movement+tunnel_height and tunnelCheck == False:
             tunnelCheck = True
             tunnelChosen = None
@@ -238,13 +244,17 @@ def game_loop():
             global tunneldone
             if(tunnelChosen == answerQ):
                 tunneldone += 1
+                print("Du har gennemført: ", tunneldone)
             else:
                 print("Chose wrong gate: Call crash")
-                crash()
+                hasCrashed = True
+        if(tunnelCheck == True and hasCrashed == False):
+            gateCount += 1
 
         #Updates player and game screen
-        change_movement += 5
-        print(change_movement)
+        if hasCrashed == False:
+            change_movement += 5
+        
         #int(math.sqrt(math.pow((-500),2)))/100
         bg_movement += 0
         player(x,y, bg_movement)
@@ -253,15 +263,25 @@ def game_loop():
             global removecount
             removecount +=1
             message_display("Din første gulerod! :)", removecount)
-            #removecount +=1
-            #remove_message(removecount)
         elif tunneldone == 3:
-            message_display("Godt arbejde!")
+            global levelcompletedcount
+            levelcompletedcount +=1
+            #print("Level completed")
+            message_display("Level completed!", levelcompletedcount)
+            
         tunnelmessage_display(choicesQ[0], change_movement, 1)
         tunnelmessage_display(choicesQ[1], change_movement, 2)
         tunnelmessage_display(choicesQ[2], change_movement, 3)
         tunnelmessage_display(choicesQ[3], change_movement, 4)
         tunnelmessage_display(textQ, change_movement, 5)
+        
+        if (gateCount > 80 and tunneldone != 3):
+            gateCount = 0
+            tunnelCheck = False
+            generateGate = True
+            change_movement = -200
+        if hasCrashed == True:
+            crash()
         pygame.display.update()
         clock.tick(10)
 
