@@ -90,13 +90,13 @@ def message_display(text, count):
         largeText = pygame.font.Font('arial.ttf',50)
         TextSurf, TextRect = text_objects(text, largeText)
         TextRect.center = ((displayWidth/2),(gameHeight/2))
-        gameDisplay.blit(TextSurf, TextRect) 
+        gameDisplay.blit(TextSurf, TextRect)
 
 
-def element(change_movement):
+def element(change_movement, progress):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
     gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10),30))
+    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10+progress),30))
     gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
     if tunneldone == 1:
         gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
@@ -183,7 +183,8 @@ def tunnelmessage_display(text, movement, textnumber):
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
-    change_movement = -200
+    change_movement = -200 - (displayHeight-y)
+    progress = 0
     print(change_movement)
     bg_movement = 0
     x_change = 0
@@ -251,13 +252,15 @@ def game_loop():
         if(tunnelCheck == True and hasCrashed == False):
             gateCount += 1
 
+        progressTick = (displayWidth-20) / ((displayHeight + 200)*3)
         #Updates player and game screen
         if hasCrashed == False:
             change_movement += 5
-            
+            progress += 1
+
         bg_movement += 0
         player(x,y, bg_movement)
-        element(change_movement)
+        element(change_movement, progress)
         if tunneldone == 1:
             global removecount
             removecount +=1
@@ -266,13 +269,13 @@ def game_loop():
             global levelcompletedcount
             levelcompletedcount +=1
             message_display("Level fuldført!", levelcompletedcount)
-            
+
         tunnelmessage_display(choicesQ[0], change_movement, 1)
         tunnelmessage_display(choicesQ[1], change_movement, 2)
         tunnelmessage_display(choicesQ[2], change_movement, 3)
         tunnelmessage_display(choicesQ[3], change_movement, 4)
         tunnelmessage_display(textQ, change_movement, 5)
-        
+
         if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
             tunnelCheck = False
@@ -327,7 +330,7 @@ def GeographyQ(choices = 4):
         f = open("questions\geography_capitals.txt","r")
     else:
         f = open("questions/geography_capitals.txt","r")
-    
+
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
