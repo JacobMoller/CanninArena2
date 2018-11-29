@@ -49,7 +49,7 @@ bgImg = pygame.transform.scale(bgImg, (gameWidth, gameHeight))
 
 #Load player graphics and size
 playerWidth = 64
-playerImg = pygame.image.load('Art/cannin/Skin/cannin_red.png')
+playerImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
 playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 
 tunnel_height = 200
@@ -59,19 +59,19 @@ tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, tunnel_height))
 
 #Load Carrots
 carrotOneImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
-carrotOneImg = pygame.transform.scale(carrotOneImg, (40, 40))
+carrotOneImg = pygame.transform.scale(carrotOneImg, (30, 30))
 carrotOneDoneImg = pygame.image.load('Art/carrot/carrot_32x32.png')
-carrotOneDoneImg = pygame.transform.scale(carrotOneDoneImg, (40, 40))
+carrotOneDoneImg = pygame.transform.scale(carrotOneDoneImg, (30, 30))
 carrotTwoImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
-carrotTwoImg = pygame.transform.scale(carrotTwoImg, (40, 40))
+carrotTwoImg = pygame.transform.scale(carrotTwoImg, (30, 30))
 carrotTwoDoneImg = pygame.image.load('Art/carrot/carrot_32x32.png')
-carrotTwoDoneImg = pygame.transform.scale(carrotTwoDoneImg, (40, 40))
+carrotTwoDoneImg = pygame.transform.scale(carrotTwoDoneImg, (30, 30))
 carrotThreeImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
-carrotThreeImg = pygame.transform.scale(carrotThreeImg, (40, 40))
+carrotThreeImg = pygame.transform.scale(carrotThreeImg, (30, 30))
 carrotThreeDoneImg = pygame.image.load('Art/carrot/carrot_32x32.png')
-carrotThreeDoneImg = pygame.transform.scale(carrotThreeDoneImg, (40, 40))
+carrotThreeDoneImg = pygame.transform.scale(carrotThreeDoneImg, (30, 30))
 topGoalLineImg = pygame.image.load('Art/background/goalline.png')
-topGoalLineImg = pygame.transform.scale(topGoalLineImg, (gameWidth-(150), 40))
+topGoalLineImg = pygame.transform.scale(topGoalLineImg, (gameWidth-20, 40))
 topGoalLineCanninImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
 topGoalLineCanninImg = pygame.transform.scale(topGoalLineCanninImg, (20, 20))
 
@@ -79,25 +79,6 @@ def player(x,y, bg_movement):
     gameDisplay.fill(black)
     gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),bg_movement))
     gameDisplay.blit(playerImg,(x,y))
-
-
-def element(change_movement):
-    gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
-    #gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+140),10))
-    #gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+140),30))
-    gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-    if tunneldone == 1:
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-    gameDisplay.blit(carrotTwoImg,((((displayWidth/2)-(gameWidth/2))+50),10))
-    if tunneldone == 2:
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+50),10))
-    gameDisplay.blit(carrotThreeImg,((((displayWidth/2)-(gameWidth/2))+90),10))
-    if tunneldone == 3:
-        #Level succes
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+50),10))
-        gameDisplay.blit(carrotThreeDoneImg,((((displayWidth/2)-(gameWidth/2))+90),10))
 
 
 def text_objects(text, font):
@@ -110,6 +91,25 @@ def message_display(text, count):
         TextSurf, TextRect = text_objects(text, largeText)
         TextRect.center = ((displayWidth/2),(gameHeight/2))
         gameDisplay.blit(TextSurf, TextRect) 
+
+
+def element(change_movement):
+    gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
+    gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+10),10))
+    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10),30))
+    gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
+    if tunneldone == 1:
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
+    gameDisplay.blit(carrotTwoImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
+    if tunneldone == 2:
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
+    gameDisplay.blit(carrotThreeImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*93)),10))
+    if tunneldone == 3:
+        #Level succes
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
+        gameDisplay.blit(carrotThreeDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*93)),10))
 
 def crash():
     message_display('Du døde', 1)
@@ -183,7 +183,7 @@ def tunnelmessage_display(text, movement, textnumber):
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
-    change_movement = random.randint(-250, 0) #SKAL ÆNDRES TIL -1500,0
+    change_movement = -200
     print(change_movement)
     bg_movement = 0
     x_change = 0
@@ -254,8 +254,7 @@ def game_loop():
         #Updates player and game screen
         if hasCrashed == False:
             change_movement += 5
-        
-        #int(math.sqrt(math.pow((-500),2)))/100
+            
         bg_movement += 0
         player(x,y, bg_movement)
         element(change_movement)
@@ -266,7 +265,6 @@ def game_loop():
         elif tunneldone == 3:
             global levelcompletedcount
             levelcompletedcount +=1
-            #print("Level completed")
             message_display("Level fuldført!", levelcompletedcount)
             
         tunnelmessage_display(choicesQ[0], change_movement, 1)
@@ -275,7 +273,7 @@ def game_loop():
         tunnelmessage_display(choicesQ[3], change_movement, 4)
         tunnelmessage_display(textQ, change_movement, 5)
         
-        if (gateCount > 80 and tunneldone != 3):
+        if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
             tunnelCheck = False
             generateGate = True
