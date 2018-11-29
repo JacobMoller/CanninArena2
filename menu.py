@@ -112,7 +112,7 @@ def message_display(text, count):
         gameDisplay.blit(TextSurf, TextRect) 
 
 def crash():
-    message_display('You Crashed', 1)
+    message_display('Du døde', 1)
 
 
 def tunneltext_objects(text, font):
@@ -267,7 +267,7 @@ def game_loop():
             global levelcompletedcount
             levelcompletedcount +=1
             #print("Level completed")
-            message_display("Level completed!", levelcompletedcount)
+            message_display("Level fuldført!", levelcompletedcount)
             
         tunnelmessage_display(choicesQ[0], change_movement, 1)
         tunnelmessage_display(choicesQ[1], change_movement, 2)
