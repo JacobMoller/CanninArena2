@@ -32,9 +32,9 @@ removecount = 0
 removecrashcount = 0
 levelcompletedcount = 0
 controlhelp = 0
-gameLevel = 3
-playGame = False
+gameLevel = 1
 gameActive = False
+pauseGame = False
 
 #Define question variables
 textQ = ""
@@ -79,6 +79,8 @@ topGoalLineCanninImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
 topGoalLineCanninImg = pygame.transform.scale(topGoalLineCanninImg, (20, 20))
 controlsHelpImg = pygame.image.load('Art/background/controls.png')
 controlsHelpImg = pygame.transform.scale(controlsHelpImg, (gameWidth, 250))
+menuBackground = pygame.image.load('Art/background/newmenu.png')
+menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
@@ -122,7 +124,6 @@ def crash():
 
 def pause():
     message_display('Paused', 1)
-
 
 def tunneltext_objects(text, font):
     tunneltextSurface = font.render(text, True, black)
@@ -191,32 +192,39 @@ def tunnelmessage_display(text, movement, textnumber):
     tunnelTextRect.center = (xcoordinate,ycoordinate)
     gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
 
+def loopControl():
+    while (gameActive):
+        game_loop()
+    while (gameActive == False):
+        openMenu()
+
 def openMenu():
     global gameActive
-    gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
-    if (gameActive == False):
+    global gameLevel
+    #gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
+    while not gameActive:
         gameDisplay.fill(black)
-        print("Menu open")
-        menuBackground = pygame.image.load('Art/background/newmenu.png')
-        menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
         gameDisplay.blit(menuBackground,(0, 0))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_j:
+                if event.key == pygame.K_1:
                     print("Level 1 please")
+                    gameLevel = 1
                     gameActive = True
-                    while gameActive:
-                        game_loop(True)
-           # if event.key == pygame.K_2:
-           #     print("Level 2 please")
-           # if event.key == pygame.K_3:
-           # print("Level 3 please")
+                elif event.key == pygame.K_2:
+                    print("Level 2 please")
+                    gameLevel = 2
+                    gameActive = True
+                elif event.key == pygame.K_3:
+                    print("Level 3 please")
+                    gameLevel = 3
+                    gameActive = True
 
         pygame.display.update()
-    if (gameActive == True):
-        game_loop(True)
+        clock.tick(10)
+    game_loop()
 
-def game_loop(playGame):
+def game_loop():
     print("play game")
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
@@ -236,14 +244,12 @@ def game_loop(playGame):
 
     gameExit = False
     hasCrashed = False
-    if (playGame == True):
-        pauseGame = False
-    elif (playGame == False):
-        pauseGame = True
+
 
 
     while not gameExit:
         global controlhelp
+        global pauseGame
         controlhelp += 1
         if(progressTick<gameWidth-40 and pauseGame == False):
             progressTick += ((gameHeight*3)/5)/(gameWidth)
@@ -265,11 +271,13 @@ def game_loop(playGame):
                     x_change += -15
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
                     x_change += 15
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_p:
                     if (pauseGame == True):
                         pauseGame = False
                     else:
                         pauseGame = True
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
                 if event.key == pygame.K_m:
                     pauseGame = True
                     openMenu()
@@ -314,11 +322,10 @@ def game_loop(playGame):
         if (hasCrashed == False and pauseGame == False):
             change_movement += 5
 
-        bg_movement += 0
         if (pauseGame == False):
             player(x,y, bg_movement)
             element(change_movement, progressTick)
-        if tunneldone == 1:
+        if tunneldone == 1 and gameLevel == 1:
             global removecount
             removecount +=1
             message_display("Din første gulerod! :)", removecount)
@@ -333,6 +340,12 @@ def game_loop(playGame):
             tunnelmessage_display(choicesQ[2], change_movement, 3)
             tunnelmessage_display(choicesQ[3], change_movement, 4)
             tunnelmessage_display(textQ, change_movement, 5)
+        if(levelcompletedcount > 30):
+            global gameActive
+            gameActive = False
+            levelcompletedcount = 0
+            tunneldone = 0
+            #openMenu()
 
         if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
