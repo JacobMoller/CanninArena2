@@ -103,19 +103,19 @@ def element(change_movement, progress):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
     gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+10),10))
     gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10 + progress),30))
-    gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
+    gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
     if tunneldone == 1:
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
-    gameDisplay.blit(carrotTwoImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+    gameDisplay.blit(carrotTwoImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
     if tunneldone == 2:
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
-        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
-    gameDisplay.blit(carrotThreeImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*93)),10))
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
+    gameDisplay.blit(carrotThreeImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*92)),10))
     if tunneldone == 3:
         #Level succes
-        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
-        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*55)),10))
-        gameDisplay.blit(carrotThreeDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*93)),10))
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
+        gameDisplay.blit(carrotThreeDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*92)),10))
 
 def crash():
     message_display('Du døde', 1)
@@ -222,7 +222,6 @@ def game_loop(playGame):
     y = (gameHeight * 0.85)
     change_movement = -200 - (gameHeight - y)
     progressTick = 0
-    progressTick += (gameHeight)/(gameWidth*3)
     bg_movement = 0
     x_change = 0
     generateGate = True
@@ -246,6 +245,8 @@ def game_loop(playGame):
     while not gameExit:
         global controlhelp
         controlhelp += 1
+        if(progressTick<gameWidth-40 and pauseGame == False):
+            progressTick += ((gameHeight*3)/5)/(gameWidth)
         #Do once
         if (generateGate == True):
             global gameLevel
