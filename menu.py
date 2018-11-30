@@ -21,7 +21,6 @@ displayHeight = int(infoObject.current_h * 0.9)
 gameWidth = int(infoObject.current_w * 0.35)
 gameHeight = int(infoObject.current_h * 0.9)
 
-
 #Define colors with rgb
 black = (0,0,0)
 white = (255,255,255)
@@ -34,6 +33,8 @@ removecrashcount = 0
 levelcompletedcount = 0
 controlhelp = 0
 gameLevel = 2
+playGame = False
+gameActive = False
 
 #Define question variables
 textQ = ""
@@ -133,21 +134,25 @@ def tunnelmessage_display(text, movement, textnumber):
         ycoordinate = movement+(displayHeight/100*5)
         if len(text) > 5:
             textSize = 15
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*19)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*22)
         elif len(text) > 12:
             textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*18)
         else:
             textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)
     if textnumber == 2:
         xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*38)
         ycoordinate = movement+(displayHeight/100*5)
         if len(text) > 5:
             textSize = 15
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
         elif len(text) > 12:
             textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
         else:
             textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
     if textnumber == 3:
         xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)
         ycoordinate = movement+(displayHeight/100*5)
@@ -156,8 +161,10 @@ def tunnelmessage_display(text, movement, textnumber):
             xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*62)
         elif len(text) > 12:
             textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)
         else:
             textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*57)
     if textnumber == 4:
         xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*76)
         ycoordinate = movement+(displayHeight/100*5)
@@ -168,6 +175,7 @@ def tunnelmessage_display(text, movement, textnumber):
             textSize = 10
         else:
             textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*77)
     if textnumber == 5:
         xcoordinate = (displayWidth/2)
         ycoordinate = movement+(displayHeight/100*15)
@@ -184,15 +192,32 @@ def tunnelmessage_display(text, movement, textnumber):
     gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
 
 def openMenu():
-    gameDisplay.fill(black)
-    print("Menu open")
-    menuBackground = pygame.image.load('Art/background/newmenu.png')
-    menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
-    gameDisplay.blit(menuBackground,(0, 0))
-    pygame.display.update()
+    global gameActive
+    gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
+    if (gameActive == False):
+        gameDisplay.fill(black)
+        print("Menu open")
+        menuBackground = pygame.image.load('Art/background/newmenu.png')
+        menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
+        gameDisplay.blit(menuBackground,(0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_j:
+                    print("Level 1 please")
+                    gameActive = True
+                    while gameActive:
+                        game_loop(True)
+           # if event.key == pygame.K_2:
+           #     print("Level 2 please")
+           # if event.key == pygame.K_3:
+           #     print("Level 3 please")
 
+        pygame.display.update()
+    if (gameActive == True):
+        game_loop(True)
 
-def game_loop():
+def game_loop(playGame):
+    print("play game")
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
     change_movement = -200
@@ -211,7 +236,10 @@ def game_loop():
 
     gameExit = False
     hasCrashed = False
-    pauseGame = False
+    if (playGame == True):
+        pauseGame = False
+    elif (playGame == False):
+        pauseGame = True
 
     
     while not gameExit:
@@ -406,6 +434,4 @@ def MathQ():
             a = i
     return(t, c, a)
 
-game_loop()
-pygame.quit()
-quit()
+openMenu()
