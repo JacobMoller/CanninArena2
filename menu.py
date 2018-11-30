@@ -118,6 +118,9 @@ def element(change_movement, progress):
 def crash():
     message_display('Du døde', 1)
 
+def pause():
+    message_display('Paused', 1)
+
 
 def tunneltext_objects(text, font):
     tunneltextSurface = font.render(text, True, black)
@@ -126,6 +129,9 @@ def tunneltext_objects(text, font):
 def openMenu():
     gameDisplay.fill(red)
     print("Menu open")
+    menuBackground = pygame.image.load('Art/background/newmenu.png')
+    menuBackground = pygame.transform.scale(controlsHelpImg, (displayWidth, displayHeight))
+    gameDisplay.blit(menuBackground,(0, 0))
     pygame.display.update()
 
 def tunnelmessage_display(text, movement, textnumber):
@@ -203,6 +209,7 @@ def game_loop():
 
     gameExit = False
     hasCrashed = False
+    pauseGame = False
 
     
     while not gameExit:
@@ -217,19 +224,24 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
-            if event.type == pygame.K_ESCAPE:
-                menu()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
                     x_change += -15
-                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
                     x_change += 15
+                if event.key == pygame.K_ESCAPE:
+                    openMenu()
+                    if (pauseGame == True):
+                        pauseGame = False
+                    else:
+                        pauseGame = True
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
                     x_change += 15
-                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
                     x_change += -15
-        
+                if event.key == pygame.K_ESCAPE:
+                    openMenu()        
 
 
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
@@ -264,7 +276,7 @@ def game_loop():
 
         progressTick = (displayWidth-20) / ((displayHeight + 200)*3)
         #Updates player and game screen
-        if hasCrashed == False:
+        if (hasCrashed == False and pauseGame == False):
             change_movement += 5
             progress += 1
 
@@ -293,6 +305,8 @@ def game_loop():
             change_movement = -200
         if hasCrashed == True:
             crash()
+        if pauseGame == True:
+            pause()
         pygame.display.update()
         clock.tick(10)
 
