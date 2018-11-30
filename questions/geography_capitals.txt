@@ -1,7 +1,7 @@
-Danmark,København
+Danmark,Kobenhavn
 Sverige,Stockholm
 Norge,Oslo
-Østrig,Wien
+Oestrig,Wien
 Finland,Helsinki
 Frankrig,Paris
 Irland,Dublin
