@@ -127,14 +127,6 @@ def tunneltext_objects(text, font):
     tunneltextSurface = font.render(text, True, black)
     return tunneltextSurface, tunneltextSurface.get_rect()
 
-def openMenu():
-    gameDisplay.fill(red)
-    print("Menu open")
-    menuBackground = pygame.image.load('Art/background/newmenu.png')
-    menuBackground = pygame.transform.scale(controlsHelpImg, (displayWidth, displayHeight))
-    gameDisplay.blit(menuBackground,(0, 0))
-    pygame.display.update()
-
 def tunnelmessage_display(text, movement, textnumber):
     if textnumber == 1:
         xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*17)
@@ -191,6 +183,15 @@ def tunnelmessage_display(text, movement, textnumber):
     tunnelTextRect.center = (xcoordinate,ycoordinate)
     gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
 
+def openMenu():
+    gameDisplay.fill(black)
+    print("Menu open")
+    menuBackground = pygame.image.load('Art/background/newmenu.png')
+    menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
+    gameDisplay.blit(menuBackground,(0, 0))
+    pygame.display.update()
+
+
 def game_loop():
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
@@ -226,7 +227,6 @@ def game_loop():
             elif (gameLevel == 3):
                 textQ, choicesQ, answerQ = MathQ()
             generateGate = False
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
@@ -296,12 +296,13 @@ def game_loop():
             global levelcompletedcount
             levelcompletedcount +=1
             message_display("Level fuldført!", levelcompletedcount)
-            
-        tunnelmessage_display(choicesQ[0], change_movement, 1)
-        tunnelmessage_display(choicesQ[1], change_movement, 2)
-        tunnelmessage_display(choicesQ[2], change_movement, 3)
-        tunnelmessage_display(choicesQ[3], change_movement, 4)
-        tunnelmessage_display(textQ, change_movement, 5)
+
+        if (pauseGame == False):
+            tunnelmessage_display(choicesQ[0], change_movement, 1)
+            tunnelmessage_display(choicesQ[1], change_movement, 2)
+            tunnelmessage_display(choicesQ[2], change_movement, 3)
+            tunnelmessage_display(choicesQ[3], change_movement, 4)
+            tunnelmessage_display(textQ, change_movement, 5)
         
         if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
