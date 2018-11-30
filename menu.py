@@ -32,7 +32,7 @@ removecount = 0
 removecrashcount = 0
 levelcompletedcount = 0
 controlhelp = 0
-gameLevel = 2
+gameLevel = 3
 playGame = False
 gameActive = False
 
@@ -96,13 +96,13 @@ def message_display(text, count):
         largeText = pygame.font.Font('arial.ttf',50)
         TextSurf, TextRect = text_objects(text, largeText)
         TextRect.center = ((displayWidth/2),(gameHeight/2))
-        gameDisplay.blit(TextSurf, TextRect) 
+        gameDisplay.blit(TextSurf, TextRect)
 
 
-def element(change_movement):
+def element(change_movement, progress):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
     gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+10),10))
-    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10),30))
+    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10 + progress),30))
     gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
     if tunneldone == 1:
         gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)),10))
@@ -181,7 +181,7 @@ def tunnelmessage_display(text, movement, textnumber):
         ycoordinate = movement+(displayHeight/100*15)
         if len(text) < 10 and len(text) < 24:
             textSize = 35
-            xcoordinate = ((displayWidth/2)-(gameWidth/2))
+            xcoordinate = (displayWidth/2)
         elif len(text) < 25:
             textSize = 20
         else:
@@ -210,7 +210,7 @@ def openMenu():
            # if event.key == pygame.K_2:
            #     print("Level 2 please")
            # if event.key == pygame.K_3:
-           #     print("Level 3 please")
+           # print("Level 3 please")
 
         pygame.display.update()
     if (gameActive == True):
@@ -220,8 +220,9 @@ def game_loop(playGame):
     print("play game")
     x = (displayWidth * 0.50 - (playerWidth/2))
     y = (gameHeight * 0.85)
-    change_movement = -200
-    print(change_movement)
+    change_movement = -200 - (gameHeight - y)
+    progressTick = 0
+    progressTick += (gameHeight)/(gameWidth*3)
     bg_movement = 0
     x_change = 0
     generateGate = True
@@ -231,7 +232,7 @@ def game_loop(playGame):
     global choicesQ
     global answerQ
     global gameLevel
-    
+
     tunnelCheck = False
 
     gameExit = False
@@ -241,7 +242,7 @@ def game_loop(playGame):
     elif (playGame == False):
         pauseGame = True
 
-    
+
     while not gameExit:
         global controlhelp
         controlhelp += 1
@@ -275,7 +276,7 @@ def game_loop(playGame):
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
                     x_change += 15
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
-                    x_change += -15       
+                    x_change += -15
 
 
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
@@ -311,11 +312,11 @@ def game_loop(playGame):
         #Updates player and game screen
         if (hasCrashed == False and pauseGame == False):
             change_movement += 5
-            
+
         bg_movement += 0
         if (pauseGame == False):
             player(x,y, bg_movement)
-            element(change_movement)
+            element(change_movement, progressTick)
         if tunneldone == 1:
             global removecount
             removecount +=1
@@ -331,7 +332,7 @@ def game_loop(playGame):
             tunnelmessage_display(choicesQ[2], change_movement, 3)
             tunnelmessage_display(choicesQ[3], change_movement, 4)
             tunnelmessage_display(textQ, change_movement, 5)
-        
+
         if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
             tunnelCheck = False
@@ -388,7 +389,7 @@ def GeographyQ(choices = 4):
         f = open("questions\geography_capitals.txt","r")
     else:
         f = open("questions/geography_capitals.txt","r")
-    
+
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
@@ -412,6 +413,7 @@ def GeographyQ(choices = 4):
 
 #Works only with 4 choices
 def MathQ():
+    print("MathQ called")
     temp1 = random.randint(0,30)
     temp2 = random.randint(0,4-math.ceil(temp1/10))
     if (temp2 == 1):
@@ -421,17 +423,18 @@ def MathQ():
     print(temp1 , "   " ,temp2)
     a = temp1 * temp2
     t = str(temp1) + " * " + str(temp2) + " = ?"
+    print(t)
     c = []
     c.append(a)
-    c.append(random.randint(1, abs(a-1)))
-    c.append(random.randint(a+2, (a+1)*2+temp1+2))
-    c.append(temp1+temp2)
-    if(c[3]==1):
-        c[3] = c[2]*3
+    c.append(str(random.randint(1, abs(a-1))))
+    c.append(str(random.randint(a+2, (a+1)*2+temp1+2)))
+    c.append(str(temp1+temp2))
     random.shuffle(c)
     for i in range(4):
         if (a==c[i]):
             a = i
+            c[i] = str(c[i])
+
     return(t, c, a)
 
 openMenu()
