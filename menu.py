@@ -32,6 +32,7 @@ tunneldone = 0
 removecount = 0
 removecrashcount = 0
 levelcompletedcount = 0
+controlhelp = 0
 
 #Define question variables
 textQ = ""
@@ -74,12 +75,15 @@ topGoalLineImg = pygame.image.load('Art/background/goalline.png')
 topGoalLineImg = pygame.transform.scale(topGoalLineImg, (gameWidth-20, 40))
 topGoalLineCanninImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
 topGoalLineCanninImg = pygame.transform.scale(topGoalLineCanninImg, (20, 20))
+controlsHelpImg = pygame.image.load('Art/background/controls.png')
+controlsHelpImg = pygame.transform.scale(controlsHelpImg, (gameWidth, 250))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
     gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),bg_movement))
     gameDisplay.blit(playerImg,(x,y))
-
+    if (controlhelp < 40):
+        gameDisplay.blit(controlsHelpImg,(((displayWidth/2)-(gameWidth/2)),gameHeight/100*50))
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -200,7 +204,11 @@ def game_loop():
     gameExit = False
     hasCrashed = False
 
+    
     while not gameExit:
+        global controlhelp
+        controlhelp += 1
+        print(controlhelp)
         #Do once
         if (generateGate == True):
             textQ, choicesQ, answerQ = DanishQ()
@@ -221,6 +229,8 @@ def game_loop():
                     x_change += 15
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     x_change += -15
+        
+
 
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
             x = (displayWidth * 0.5 + gameWidth * 0.5  - playerWidth)
