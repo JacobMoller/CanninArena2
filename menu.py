@@ -36,6 +36,7 @@ levelcompletedcount = 0
 controlhelp = 0
 gameLevel = 1
 gameActive = False
+houseActive = False
 pauseGame = False
 carrotsTotal = 0
 levelReached = 1
@@ -53,6 +54,9 @@ clock = pygame.time.Clock()
 #Load Background
 bgImg = pygame.image.load('Art/background/arena_bg.png')
 bgImg = pygame.transform.scale(bgImg, (gameWidth, gameHeight))
+#Load hHouse background
+houseImg = pygame.image.load('Art/house/bg.png')
+houseImg = pygame.transform.scale(houseImg, (displayWidth, displayHeight))
 
 #Load player graphics and size
 playerWidth = 64
@@ -62,7 +66,6 @@ playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
 tunnel_height = 200
 tunnelImg = pygame.image.load('Art/background/tunnel_bg.png')
 tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, tunnel_height))
-
 
 #Load Carrots
 carrotOneImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
@@ -196,6 +199,37 @@ def tunnelmessage_display(text, movement, textnumber):
     tunnelTextRect.center = (xcoordinate,ycoordinate)
     gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
 
+def houseLevel():
+    x = (displayWidth/100) * 80
+    y = (displayHeight/100) * 65
+    global playerImg
+    global houseActive
+    houseActive = True
+    playerImg =  pygame.transform.scale(playerImg, (128, 128))
+
+    while houseActive:
+        gameDisplay.fill(black)
+        gameDisplay.blit(houseImg,(0, 0))
+        gameDisplay.blit(playerImg, (x,y))
+
+
+        #Handle inputs
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameExit = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    x += -40
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    x += 40
+        if(x > (displayWidth/100)*90):
+            print("Exit house")
+            houseActive = False
+
+        pygame.display.update()
+        clock.tick(10)
+    openMenu()
+
 def openMenu():
     global gameActive
     global gameLevel
@@ -210,7 +244,7 @@ def openMenu():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
-                    developerMode= True
+                    developerMode = True
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     if levelSelected>0:
                         levelSelected -= 1
@@ -224,7 +258,11 @@ def openMenu():
             levelReached = 3
         pygame.display.update()
         clock.tick(10)
-    game_loop()
+    if (levelSelected == 0):
+        print("Enter house")
+        houseLevel()
+    else:
+        game_loop()
 
 def game_loop():
     print("play game")
