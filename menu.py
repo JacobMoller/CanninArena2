@@ -14,6 +14,8 @@ import platform
 pygame.init()
 pygame.font.init()
 
+developerMode = False
+
 #Define screen and game size
 infoObject = pygame.display.Info()
 displayWidth = infoObject.current_w
@@ -194,35 +196,32 @@ def tunnelmessage_display(text, movement, textnumber):
     tunnelTextRect.center = (xcoordinate,ycoordinate)
     gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
 
-def loopControl():
-    while (gameActive):
-        game_loop()
-    while (gameActive == False):
-        openMenu()
-
 def openMenu():
     global gameActive
     global gameLevel
     global levelReached
+    global developerMode
+    levelSelected = 0
     #gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
     while not gameActive:
         gameDisplay.fill(black)
         gameDisplay.blit(menuBackground,(0, 0))
+        gameDisplay.blit(playerImg, (200+200*levelSelected,displayHeight/2))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1 and levelReached >= 1:
-                    print("Level 1 please")
-                    gameLevel = 1
+                if event.key == pygame.K_m:
+                    developerMode= True
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    if levelSelected>0:
+                        levelSelected -= 1
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    if levelSelected < 4 and levelSelected<levelReached:
+                        levelSelected += 1
+                if event.key == pygame.K_RETURN:
+                    gameLevel = levelSelected
                     gameActive = True
-                elif event.key == pygame.K_2 and levelReached >= 2:
-                    print("Level 2 please")
-                    gameLevel = 2
-                    gameActive = True
-                elif event.key == pygame.K_3 and levelReached >= 3:
-                    print("Level 3 please")
-                    gameLevel = 3
-                    gameActive = True
-
+        if (developerMode == True):
+            levelReached = 3
         pygame.display.update()
         clock.tick(10)
     game_loop()
@@ -257,7 +256,7 @@ def game_loop():
         global controlhelp
         global pauseGame
         controlhelp += 1
-        if(progressTick<gameWidth-40 and pauseGame == False):
+        if(progressTick<gameWidth-40 and pauseGame == False and hasCrashed == False):
             progressTick += ((gameHeight*3)/5)/(gameWidth)
         #Do once
         if (generateGate == True):
@@ -427,7 +426,8 @@ def GeographyQ(choices = 4):
     while(len(c)<choices):
         tempIndex = random.randint(0, len(qList)-1)
         if(tempIndex != index):
-            c.append(qList[tempIndex].split(",")[1])
+            if(qList[tempIndex].split(",")[1] not in c):
+                c.append(qList[tempIndex].split(",")[1])
     random.shuffle(c)
     t = "Hvad er hovedstaden i " + q + "?"
     for i in range(choices):
