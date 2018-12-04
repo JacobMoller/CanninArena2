@@ -35,6 +35,8 @@ controlhelp = 0
 gameLevel = 1
 gameActive = False
 pauseGame = False
+carrotsTotal = 0
+levelReached = 1
 
 #Define question variables
 textQ = ""
@@ -201,21 +203,22 @@ def loopControl():
 def openMenu():
     global gameActive
     global gameLevel
+    global levelReached
     #gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
     while not gameActive:
         gameDisplay.fill(black)
         gameDisplay.blit(menuBackground,(0, 0))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
+                if event.key == pygame.K_1 and levelReached >= 1:
                     print("Level 1 please")
                     gameLevel = 1
                     gameActive = True
-                elif event.key == pygame.K_2:
+                elif event.key == pygame.K_2 and levelReached >= 2:
                     print("Level 2 please")
                     gameLevel = 2
                     gameActive = True
-                elif event.key == pygame.K_3:
+                elif event.key == pygame.K_3 and levelReached >= 3:
                     print("Level 3 please")
                     gameLevel = 3
                     gameActive = True
@@ -238,6 +241,9 @@ def game_loop():
     global textQ
     global choicesQ
     global answerQ
+    global gameLevel
+    global carrotsTotal
+    global levelReached
     global gameLevel
 
     tunnelCheck = False
@@ -311,6 +317,7 @@ def game_loop():
             global tunneldone
             if(tunnelChosen == answerQ):
                 tunneldone += 1
+                carrotsTotal += 1
                 print("Du har gennemført: ", tunneldone)
             else:
                 print("Chose wrong gate: Call crash")
@@ -332,6 +339,7 @@ def game_loop():
         elif tunneldone == 3:
             global levelcompletedcount
             levelcompletedcount +=1
+            levelReached = gameLevel+1
             message_display("Level fuldført!", levelcompletedcount)
 
         if (pauseGame == False):
@@ -345,7 +353,6 @@ def game_loop():
             gameActive = False
             levelcompletedcount = 0
             tunneldone = 0
-            #openMenu()
 
         if (change_movement > displayHeight and tunneldone != 3):
             gateCount = 0
@@ -356,8 +363,11 @@ def game_loop():
             crash()
         if pauseGame == True:
             pause()
-        pygame.display.update()
-        clock.tick(10)
+        if (gameActive == True):
+            pygame.display.update()
+            clock.tick(10)
+        else:
+            openMenu()
 
 #Only works with 4 choices atm
 def DanishQ(choices = 4):
