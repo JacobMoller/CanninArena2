@@ -1,7 +1,6 @@
 Danmark,Kobenhavn
 Sverige,Stockholm
 Norge,Oslo
-Oestrig,Wien
 Finland,Helsinki
 Frankrig,Paris
 Irland,Dublin
@@ -11,5 +10,14 @@ Rusland, Moskva
 Frankrig, Paris
 USA, Washington D.C.
 Holland, Amsterdam
-Gr¾kenland, Athen
 Tyskland, Berlin
+Kina, Beijing
+Schweiz, Bern
+Brasilien, Bras’lia
+Slovakiet, Bratislava
+Argentina, Buenos Aires
+Nordkorea, Pyongyang
+Island, Reykjavik
+Italien, Rom
+Israel, Tel Aviv
+Kroatien, Zagreb
