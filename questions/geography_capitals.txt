@@ -6,3 +6,10 @@ Finland,Helsinki
 Frankrig,Paris
 Irland,Dublin
 Scotland,Edinburgh
+Spanien, Madrid
+Rusland, Moskva
+Frankrig, Paris
+USA, Washington D.C.
+Holland, Amsterdam
+Gr¾kenland, Athen
+Tyskland, Berlin
