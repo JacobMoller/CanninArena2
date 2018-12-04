@@ -1,4 +1,12 @@
-Stol,Substantiv
-Spise,Verbum
-Ambulance,Substantiv
-Orange,Adjektiv
+stol,Substantiv
+spise,Verbum
+ambulance,Substantiv
+orange,Adjektiv
+flamme,Substantiv
+blå,Adjektiv
+bag,Praeposition
+foran,Praeposition
+kaste,Verbum
+pasta,Substantiv
+pizza,Substantiv
+løbe,Verbum
