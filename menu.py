@@ -40,6 +40,7 @@ houseActive = False
 pauseGame = False
 carrotsTotal = 0
 levelReached = 1
+levelSelected = 0
 
 #Define question variables
 textQ = ""
@@ -233,6 +234,7 @@ def houseLevel():
     skinArray = [skinDefault, skinGold, skinOrange, skinRed]
     priceArray = [0, 50, 25, 9]
     ownedArray = [True, False, False, False]
+    nameArray = ["Gode Gamle","Guld Cannin", "Gulerodsjäger", "Spider Cannin"]
 
     while houseActive:
         gameDisplay.fill(black)
@@ -272,21 +274,25 @@ def houseLevel():
                         playerImg = pygame.transform.scale(selectedSkin, (128, 128))
                     else:
                         print("You dont have enough carrots for this outfit", carrotsTotal)
-                        message_display("You dont have enough carrots for this outfit", 1)
+                        message_display("Du mangler gulerødder", 1)
         if(x <= 0):
             x = 0
         if(x > (displayWidth/100)*90):
-            print("Exit house")
             houseActive = False
+            gameActive = False
+            print(houseActive)
         if(x < (displayWidth/100)*25):
             isSelecting = True
             tempSkin = pygame.transform.scale(selectedSkin,(128,128))
             gameDisplay.blit(tempSkin, ((displayWidth/100)*10,(displayHeight/100)*30))
             gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
             gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
+            print("")
         else:
             isSelecting = False
             selectedSkin = playerImg
+        if(houseActive == False):
+            break
 
 
         pygame.display.update()
@@ -299,8 +305,10 @@ def openMenu():
     global levelReached
     global developerMode
     global carrotsTotal
-    levelSelected = 0
-    #gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
+    global playerImg
+    global levelSelected
+    gameActive = False #SKAL FJERNES NÅR MENU SKAL FIKSES
+    playerImg = pygame.transform.scale(playerImg,(64,64))
     while not gameActive:
         gameDisplay.fill(black)
         gameDisplay.blit(menuBackground,(0, 0))
@@ -316,7 +324,7 @@ def openMenu():
                     if levelSelected>0:
                         levelSelected -= 1
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    if levelSelected < 4 and levelSelected<levelReached:
+                    if levelSelected < 3 and levelSelected<levelReached:
                         levelSelected += 1
                 if event.key == pygame.K_RETURN:
                     gameLevel = levelSelected
