@@ -88,6 +88,20 @@ controlsHelpImg = pygame.image.load('Art/background/controls.png')
 controlsHelpImg = pygame.transform.scale(controlsHelpImg, (gameWidth, 250))
 menuBackground = pygame.image.load('Art/background/newmenu.png')
 menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
+carrot = pygame.image.load('Art/carrot/carrot_32x32.png')
+carrot = pygame.transform.scale(carrot, (64,64))
+
+#Load Skins
+skinDefault = pygame.image.load('Art/cannin/skin/cannin_default.png')
+skinGold = pygame.image.load('Art/cannin/skin/cannin_gold.png')
+skinOrange = pygame.image.load('Art/cannin/skin/cannin_orange.png')
+skinRed = pygame.image.load('Art/cannin/skin/cannin_red.png')
+
+#Load Arrows
+arrowUp = pygame.image.load('Art/background/control_arrow_up.png')
+arrowUp = pygame.transform.scale(arrowUp, (65,65))
+arrowDown = pygame.image.load('Art/background/control_arrow_down.png')
+arrowDown = pygame.transform.scale(arrowDown, (65,65))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
@@ -204,14 +218,22 @@ def houseLevel():
     y = (displayHeight/100) * 65
     global playerImg
     global houseActive
+    global carrotsTotal
     houseActive = True
-    playerImg =  pygame.transform.scale(playerImg, (128, 128))
+    playerImg = pygame.transform.scale(playerImg, (128, 128))
+    isSelecting = False
+    selectedSkin = playerImg
+    indexSkin = 0
+    skinArray = [skinDefault, skinGold, skinOrange, skinRed]
+    priceArray = [0, 50, 25, 9]
+    ownedArray = [True, False, False, False]
 
     while houseActive:
         gameDisplay.fill(black)
         gameDisplay.blit(houseImg,(0, 0))
         gameDisplay.blit(playerImg, (x,y))
-
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        print ("Carrots: ", carrotsTotal) #TODO: FIX
 
         #Handle inputs
         for event in pygame.event.get():
@@ -219,12 +241,47 @@ def houseLevel():
                 gameExit = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    x += -40
+                    if(x >= 0):
+                        x += -40
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     x += 40
+                if event.key == pygame.K_UP and isSelecting == True:
+                    if(indexSkin < len(skinArray)-1):
+                        indexSkin += 1
+                    else:
+                        indexSkin = 0
+                    selectedSkin = skinArray[indexSkin]
+                if event.key == pygame.K_DOWN and isSelecting == True:
+                    if(indexSkin > 0):
+                        indexSkin -= 1
+                    else:
+                        indexSkin = len(skinArray)-1
+                    selectedSkin = skinArray[indexSkin]
+                if event.key == pygame.K_RETURN and isSelecting == True:
+                    if ownedArray[indexSkin] == True:
+                        playerImg = pygame.transform.scale(selectedSkin, (128, 128))
+                    elif priceArray[indexSkin] <= carrotsTotal:
+                        carrotsTotal -= priceArray[indexSkin]
+                        ownedArray[indexSkin] = True
+                        playerImg = pygame.transform.scale(selectedSkin, (128, 128))
+                    else:
+                        print("You dont have enough carrots for this outfit", carrotsTotal)
+                        message_display("You dont have enough carrots for this outfit", 1)
+        if(x <= 0):
+            x = 0
         if(x > (displayWidth/100)*90):
             print("Exit house")
             houseActive = False
+        if(x < (displayWidth/100)*25):
+            isSelecting = True
+            tempSkin = pygame.transform.scale(selectedSkin,(128,128))
+            gameDisplay.blit(tempSkin, ((displayWidth/100)*10,(displayHeight/100)*30))
+            gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
+            gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
+        else:
+            isSelecting = False
+            selectedSkin = playerImg
+
 
         pygame.display.update()
         clock.tick(10)
@@ -235,16 +292,20 @@ def openMenu():
     global gameLevel
     global levelReached
     global developerMode
+    global carrotsTotal
     levelSelected = 0
     #gameActive = True #SKAL FJERNES NÅR MENU SKAL FIKSES
     while not gameActive:
         gameDisplay.fill(black)
         gameDisplay.blit(menuBackground,(0, 0))
-        gameDisplay.blit(playerImg, (200+200*levelSelected,displayHeight/2))
+        gameDisplay.blit(playerImg, (55*(displayWidth/768)+(197*levelSelected)*(displayWidth/768),displayHeight*0.56))
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        print ("Carrots: ", carrotsTotal) #TODO: FIX
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
                     developerMode = True
+                    carrotsTotal = 200
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     if levelSelected>0:
                         levelSelected -= 1
@@ -271,7 +332,6 @@ def game_loop():
     change_movement = -200 - (gameHeight - y)
     progressTick = 0
     bg_movement = 0
-    x_change = 0
     generateGate = True
     level = 1
     gateCount = 0
@@ -282,17 +342,18 @@ def game_loop():
     global carrotsTotal
     global levelReached
     global gameLevel
+    global carrot
 
     tunnelCheck = False
 
     gameExit = False
     hasCrashed = False
 
-
-
     while not gameExit:
         global controlhelp
         global pauseGame
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        print ("Carrots: ", carrotsTotal) #TODO: FIX
         controlhelp += 1
         if(progressTick<gameWidth-40 and pauseGame == False and hasCrashed == False):
             progressTick += ((gameHeight*3)/5)/(gameWidth)
@@ -311,9 +372,11 @@ def game_loop():
                 gameExit = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
-                    x_change += -15
+                    if(x > displayWidth/2 - gameWidth/2):
+                        x += -15
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
-                    x_change += 15
+                    if(x < displayWidth/2 + gameWidth/2 - playerWidth):
+                        x += 15
                 if event.key == pygame.K_p:
                     if (pauseGame == True):
                         pauseGame = False
@@ -326,17 +389,16 @@ def game_loop():
                     openMenu()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
-                    x_change += 15
+                    if(x > displayWidth/2 + gameWidth/2 - playerWidth):
+                        x += 15
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
-                    x_change += -15
-
-
+                    if(x < displayWidth/2 - gameWidth/2):
+                        x += -15
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
             x = (displayWidth * 0.5 + gameWidth * 0.5  - playerWidth)
         elif x < (displayWidth * 0.5 - gameWidth * 0.5):
             x = (displayWidth * 0.5 - gameWidth * 0.5)
-        else:
-            x += x_change
+
 
         if y < change_movement+tunnel_height and tunnelCheck == False:
             tunnelCheck = True
