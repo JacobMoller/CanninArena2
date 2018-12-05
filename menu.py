@@ -121,6 +121,12 @@ def message_display(text, count):
         TextRect.center = ((displayWidth/2),(gameHeight/2))
         gameDisplay.blit(TextSurf, TextRect)
 
+def cannin_message(text):
+    largeText = pygame.font.Font('arial.ttf',50)
+    TextSurf, TextRect = text_objects(text, largeText)
+    TextRect.center = ((displayWidth/100*10),(displayHeight/100*7))
+    gameDisplay.blit(TextSurf, TextRect)
+
 
 def element(change_movement, progress):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
@@ -233,7 +239,7 @@ def houseLevel():
         gameDisplay.blit(houseImg,(0, 0))
         gameDisplay.blit(playerImg, (x,y))
         gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
-        print ("Carrots: ", carrotsTotal) #TODO: FIX
+        cannin_message(str(carrotsTotal))
 
         #Handle inputs
         for event in pygame.event.get():
@@ -300,7 +306,7 @@ def openMenu():
         gameDisplay.blit(menuBackground,(0, 0))
         gameDisplay.blit(playerImg, (55*(displayWidth/768)+(197*levelSelected)*(displayWidth/768),displayHeight*0.56))
         gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
-        print ("Carrots: ", carrotsTotal) #TODO: FIX
+        cannin_message(str(carrotsTotal))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
@@ -353,7 +359,7 @@ def game_loop():
         global controlhelp
         global pauseGame
         gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
-        print ("Carrots: ", carrotsTotal) #TODO: FIX
+        cannin_message(str(carrotsTotal))
         controlhelp += 1
         if(progressTick<gameWidth-40 and pauseGame == False and hasCrashed == False):
             progressTick += ((gameHeight*3)/5)/(gameWidth)
