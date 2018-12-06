@@ -107,6 +107,18 @@ arrowUp = pygame.image.load('Art/background/control_arrow_up.png')
 arrowUp = pygame.transform.scale(arrowUp, (65,65))
 arrowDown = pygame.image.load('Art/background/control_arrow_down.png')
 arrowDown = pygame.transform.scale(arrowDown, (65,65))
+enterKey = pygame.image.load('Art/ui/enter.png')
+enterKey = pygame.transform.scale(enterKey, (49*4,24*4))
+
+#Load trophies
+trophyD = pygame.image.load('Art/house/dktrophy.png')
+trophyD = pygame.transform.scale(trophyD, (13*4,13*4))
+trophyG = pygame.image.load('Art/house/geotrophy.png')
+trophyG = pygame.transform.scale(trophyG, (13*4,13*4))
+trophyM = pygame.image.load('Art/house/mattrophy.png')
+trophyM = pygame.transform.scale(trophyM, (13*4,13*4))
+newsPaper = pygame.image.load('Art/house/avis.png')
+newsPaper = pygame.transform.scale(newsPaper, (220,133))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
@@ -230,6 +242,7 @@ def houseLevel():
     global playerImg
     global houseActive
     global carrotsTotal
+    global levelReached
     houseActive = True
     playerImg = pygame.transform.scale(playerImg, (128, 128))
     isSelecting = False
@@ -241,9 +254,17 @@ def houseLevel():
     nameArray = ["Gode Gamle","Guld Cannin", "Gulerodsjäger", "Spider Cannin"]
     x_dir = 0
 
+
     while houseActive:
         gameDisplay.fill(black)
         gameDisplay.blit(houseImg,(0, 0))
+        if(levelReached > 1):
+            gameDisplay.blit(trophyD, ((displayWidth/100)*65,(displayHeight/100)*20))
+        if(levelReached > 2):
+            gameDisplay.blit(trophyG, ((displayWidth/100)*70,(displayHeight/100)*20))
+        if(levelReached > 3):
+            gameDisplay.blit(trophyM, ((displayWidth/100)*75,(displayHeight/100)*20))
+            gameDisplay.blit(newsPaper, ((displayWidth/100)*45,(displayHeight/100)*25))
         gameDisplay.blit(playerImg, (x,y))
         gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
         cannin_message(str(carrotsTotal))
@@ -298,6 +319,10 @@ def houseLevel():
             gameDisplay.blit(tempSkin, ((displayWidth/100)*10,(displayHeight/100)*30))
             gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
             gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
+            gameDisplay.blit(enterKey, ((displayWidth/100)*20,(displayHeight/100)*33))
+            print("PRICE: ", priceArray[indexSkin]) #TODO: Jacob
+            print("NAME: ", nameArray[indexSkin]) #TODO: Jacob
+
         else:
             isSelecting = False
             selectedSkin = playerImg
@@ -340,7 +365,7 @@ def openMenu():
                     gameLevel = levelSelected
                     gameActive = True
         if (developerMode == True):
-            levelReached = 3
+            levelReached = 4
         pygame.display.update()
         clock.tick(10)
     if (levelSelected == 0):
