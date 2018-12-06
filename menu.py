@@ -23,6 +23,10 @@ displayHeight = int(infoObject.current_h * 0.9)
 gameWidth = int(infoObject.current_w * 0.35)
 gameHeight = int(infoObject.current_h * 0.9)
 
+#Set Program logo
+gameIcon = pygame.image.load('Art/cannin/cannin_32x32_icon.png')
+pygame.display.set_icon(gameIcon)
+
 #Define colors with rgb
 black = (0,0,0)
 white = (255,255,255)
