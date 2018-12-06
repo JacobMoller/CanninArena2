@@ -118,7 +118,7 @@ trophyG = pygame.transform.scale(trophyG, (13*4,13*4))
 trophyM = pygame.image.load('Art/house/mattrophy.png')
 trophyM = pygame.transform.scale(trophyM, (13*4,13*4))
 newsPaper = pygame.image.load('Art/house/avis.png')
-newsPaper = pygame.transform.scale(newsPaper, (220,133))
+newsPaper = pygame.transform.scale(newsPaper, (146,88))
 
 def player(x,y, bg_movement):
     gameDisplay.fill(black)
@@ -269,11 +269,11 @@ def houseLevel():
         gameDisplay.fill(black)
         gameDisplay.blit(houseImg,(0, 0))
         if(levelReached > 1):
-            gameDisplay.blit(trophyD, ((displayWidth/100)*65,(displayHeight/100)*20))
+            gameDisplay.blit(trophyD, ((displayWidth/100)*65,(displayHeight/100)*21))
         if(levelReached > 2):
-            gameDisplay.blit(trophyG, ((displayWidth/100)*70,(displayHeight/100)*20))
+            gameDisplay.blit(trophyG, ((displayWidth/100)*70,(displayHeight/100)*21))
         if(levelReached > 3):
-            gameDisplay.blit(trophyM, ((displayWidth/100)*75,(displayHeight/100)*20))
+            gameDisplay.blit(trophyM, ((displayWidth/100)*75,(displayHeight/100)*21))
             gameDisplay.blit(newsPaper, ((displayWidth/100)*45,(displayHeight/100)*25))
         gameDisplay.blit(playerImg, (x,y))
         gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
