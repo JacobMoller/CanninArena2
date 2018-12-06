@@ -235,6 +235,7 @@ def houseLevel():
     priceArray = [0, 50, 25, 9]
     ownedArray = [True, False, False, False]
     nameArray = ["Gode Gamle","Guld Cannin", "Gulerodsjäger", "Spider Cannin"]
+    x_dir = 0
 
     while houseActive:
         gameDisplay.fill(black)
@@ -250,9 +251,9 @@ def houseLevel():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     if(x >= 0):
-                        x += -40
+                        x_dir = -40
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    x += 40
+                    x_dir = 40
                 if event.key == pygame.K_UP and isSelecting == True:
                     if(indexSkin < len(skinArray)-1):
                         indexSkin += 1
@@ -275,6 +276,12 @@ def houseLevel():
                     else:
                         print("You dont have enough carrots for this outfit", carrotsTotal)
                         message_display("Du mangler gulerødder", 1)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
+                    x_dir = 0
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
+                    x_dir = 0
+        x += x_dir
         if(x <= 0):
             x = 0
         if(x > (displayWidth/100)*90):
@@ -287,7 +294,6 @@ def houseLevel():
             gameDisplay.blit(tempSkin, ((displayWidth/100)*10,(displayHeight/100)*30))
             gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
             gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
-            print("")
         else:
             isSelecting = False
             selectedSkin = playerImg
@@ -349,6 +355,7 @@ def game_loop():
     generateGate = True
     level = 1
     gateCount = 0
+    x_dir = 0
     global textQ
     global choicesQ
     global answerQ
@@ -387,10 +394,10 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
                     if(x > displayWidth/2 - gameWidth/2):
-                        x += -15
+                        x_dir = -15
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
                     if(x < displayWidth/2 + gameWidth/2 - playerWidth):
-                        x += 15
+                        x_dir = 15
                 if event.key == pygame.K_p:
                     if (pauseGame == True):
                         pauseGame = False
@@ -403,11 +410,11 @@ def game_loop():
                     openMenu()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
-                    if(x > displayWidth/2 + gameWidth/2 - playerWidth):
-                        x += 15
+                    x_dir = 0
                 if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
-                    if(x < displayWidth/2 - gameWidth/2):
-                        x += -15
+                    x_dir = 0
+
+        x += x_dir
         if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
             x = (displayWidth * 0.5 + gameWidth * 0.5  - playerWidth)
         elif x < (displayWidth * 0.5 - gameWidth * 0.5):
