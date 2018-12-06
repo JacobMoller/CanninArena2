@@ -175,6 +175,7 @@ def element(change_movement, progress):
 
 def crash():
     message_display('Du døde', 1)
+    openMenu()
 
 def pause():
     message_display('Paused', 1)
