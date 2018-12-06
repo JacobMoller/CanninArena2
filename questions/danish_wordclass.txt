@@ -3,10 +3,9 @@ spise,Verbum
 ambulance,Substantiv
 orange,Adjektiv
 flamme,Substantiv
-blå,Adjektiv
-bag,Praeposition
+bagved,Praeposition
 foran,Praeposition
 kaste,Verbum
 pasta,Substantiv
 pizza,Substantiv
-løbe,Verbum
+

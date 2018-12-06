@@ -5,19 +5,18 @@ Finland,Helsinki
 Frankrig,Paris
 Irland,Dublin
 Scotland,Edinburgh
-Spanien, Madrid
-Rusland, Moskva
-Frankrig, Paris
-USA, Washington D.C.
-Holland, Amsterdam
-Tyskland, Berlin
-Kina, Beijing
-Schweiz, Bern
-Brasilien, Bras’lia
-Slovakiet, Bratislava
-Argentina, Buenos Aires
-Nordkorea, Pyongyang
-Island, Reykjavik
-Italien, Rom
-Israel, Tel Aviv
-Kroatien, Zagreb
+Spanien,Madrid
+Rusland,Moskva
+Frankrig,Paris
+USA,Washington D.C.
+Holland,Amsterdam
+Tyskland,Berlin
+Kina,Beijing
+Schweiz,Bern
+Slovakiet,Bratislava
+Argentina,Buenos Aires
+Nordkorea,Pyongyang
+Island,Reykjavik
+Italien,Rom
+Israel,Tel Aviv
+Kroatien,Zagreb
