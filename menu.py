@@ -144,6 +144,16 @@ def cannin_message(text):
     TextRect.center = ((displayWidth/100*10),(displayHeight/100*7))
     gameDisplay.blit(TextSurf, TextRect)
 
+def store_message(text, number):
+    largeText = pygame.font.Font('arial.ttf',50)
+    TextSurf, TextRect = text_objects(text, largeText)
+    if number == 1:
+        TextRect.center = ((displayWidth/100*30),(displayHeight/100*5))
+    if number == 2:
+        TextRect.center = ((displayWidth/100*30),(displayHeight/100*15))
+    if number == 3:
+        TextRect.center = ((displayWidth/100*50),(displayHeight/100*50))
+    gameDisplay.blit(TextSurf, TextRect)
 
 def element(change_movement, progress):
     gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
@@ -300,7 +310,7 @@ def houseLevel():
                         playerImg = pygame.transform.scale(selectedSkin, (128, 128))
                     else:
                         print("You dont have enough carrots for this outfit", carrotsTotal)
-                        message_display("Du mangler gulerødder", 1)
+                        store_message("Du mangler gulerødder", 3)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
                     x_dir = 0
@@ -320,8 +330,10 @@ def houseLevel():
             gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
             gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
             gameDisplay.blit(enterKey, ((displayWidth/100)*20,(displayHeight/100)*33))
-            print("PRICE: ", priceArray[indexSkin]) #TODO: Jacob
-            print("NAME: ", nameArray[indexSkin]) #TODO: Jacob
+            storestringone = "NAME: " + str(nameArray[indexSkin]) #TODO: Jacob
+            storestringtwo = "PRICE: " + str(priceArray[indexSkin]) #TODO: Jacob
+            store_message(storestringone, 1)
+            store_message(storestringtwo, 2)
 
         else:
             isSelecting = False
