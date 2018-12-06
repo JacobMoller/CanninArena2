@@ -8,4 +8,3 @@ foran,Praeposition
 kaste,Verbum
 pasta,Substantiv
 pizza,Substantiv
-
