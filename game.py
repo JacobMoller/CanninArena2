@@ -1,21 +1,552 @@
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      OLIVER
-#
-# Created:     14-11-2018
-# Copyright:   (c) OLIVER 2018
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
+#################################
+#          Authors:             #
+#     Jacob Møller Jensen       #
+#    Oliver Thejl Eriksen       #
+#   Rasmus Damgaard-Iversen     #
+#################################
 import pygame
+import pygame.freetype
+import time
+import math
 import random
 import math
+import platform
+import sys
 pygame.init()
+pygame.font.init()
+
+developerMode = False
+
+#Define screen and game size
+infoObject = pygame.display.Info()
+displayWidth = infoObject.current_w
+displayHeight = infoObject.current_h
+gameWidth = infoObject.current_w
+gameHeight = infoObject.current_h
+print(displayWidth, displayHeight)
+
+#Set Program logo
+gameIcon = pygame.image.load('Art/cannin/cannin_32x32_icon.png')
+pygame.display.set_icon(gameIcon)
+
+#Define colors with rgb
+black = (0,0,0)
+white = (255,255,255)
+red = (255,0,0)
+
+#Define tunnel succes
+tunneldone = 0
+removecount = 0
+removecrashcount = 0
+levelcompletedcount = 0
+controlhelp = 0
+gameLevel = 1
+gameActive = False
+houseActive = False
+pauseGame = False
+carrotsTotal = 0
+levelReached = 1
+levelSelected = 0
+
+#Define question variables
+textQ = ""
+choicesQ = []
+answerQ = 0
+
+#Setup Screen Display
+gameDisplay = pygame.display.set_mode((displayHeight,displayWidth),pygame.FULLSCREEN)
+pygame.mouse.set_visible(False)
+pygame.display.set_caption('CanninArena 2 REMASTERED')
+clock = pygame.time.Clock()
+
+#Load Background
+bgImg = pygame.image.load('Art/background/arena_bg.png')
+bgImg = pygame.transform.scale(bgImg, (gameWidth, gameHeight))
+#Load hHouse background
+houseImg = pygame.image.load('Art/house/bg.png')
+houseImg = pygame.transform.scale(houseImg, (displayWidth, displayHeight))
+
+#Load player graphics and size
+playerWidth = 64
+playerImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
+playerImg = pygame.transform.scale(playerImg, (playerWidth, playerWidth))
+
+tunnel_height = 200
+tunnelImg = pygame.image.load('Art/background/tunnel_bg.png')
+tunnelImg = pygame.transform.scale(tunnelImg, (gameWidth, tunnel_height))
+
+#Load Carrots
+carrotOneImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
+carrotOneImg = pygame.transform.scale(carrotOneImg, (30, 30))
+carrotOneDoneImg = pygame.image.load('Art/carrot/carrot_golden_32x32.png')
+carrotOneDoneImg = pygame.transform.scale(carrotOneDoneImg, (30, 30))
+carrotTwoImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
+carrotTwoImg = pygame.transform.scale(carrotTwoImg, (30, 30))
+carrotTwoDoneImg = pygame.image.load('Art/carrot/carrot_golden_32x32.png')
+carrotTwoDoneImg = pygame.transform.scale(carrotTwoDoneImg, (30, 30))
+carrotThreeImg = pygame.image.load('Art/carrot/carrot_black_32x32.png')
+carrotThreeImg = pygame.transform.scale(carrotThreeImg, (30, 30))
+carrotThreeDoneImg = pygame.image.load('Art/carrot/carrot_golden_32x32.png')
+carrotThreeDoneImg = pygame.transform.scale(carrotThreeDoneImg, (30, 30))
+topGoalLineImg = pygame.image.load('Art/background/goalline.png')
+topGoalLineImg = pygame.transform.scale(topGoalLineImg, (gameWidth-20, 40))
+topGoalLineCanninImg = pygame.image.load('Art/cannin/Skin/cannin_default.png')
+topGoalLineCanninImg = pygame.transform.scale(topGoalLineCanninImg, (20, 20))
+controlsHelpImg = pygame.image.load('Art/background/controls.png')
+controlsHelpImg = pygame.transform.scale(controlsHelpImg, (gameWidth, 250))
+menuBackground = pygame.image.load('Art/background/newmenu.png')
+menuBackground = pygame.transform.scale(menuBackground, (displayWidth, displayHeight))
+carrot = pygame.image.load('Art/carrot/carrot_32x32.png')
+carrot = pygame.transform.scale(carrot, (64,64))
+
+#Load Skins
+skinDefault = pygame.image.load('Art/cannin/skin/cannin_default.png')
+skinGold = pygame.image.load('Art/cannin/skin/cannin_gold.png')
+skinOrange = pygame.image.load('Art/cannin/skin/cannin_orange.png')
+skinRed = pygame.image.load('Art/cannin/skin/cannin_red.png')
+
+#Load Arrows
+arrowUp = pygame.image.load('Art/background/control_arrow_up.png')
+arrowUp = pygame.transform.scale(arrowUp, (65,65))
+arrowDown = pygame.image.load('Art/background/control_arrow_down.png')
+arrowDown = pygame.transform.scale(arrowDown, (65,65))
+enterKey = pygame.image.load('Art/ui/enter.png')
+enterKey = pygame.transform.scale(enterKey, (49*4,24*4))
+
+#Load trophies
+trophyD = pygame.image.load('Art/house/dktrophy.png')
+trophyD = pygame.transform.scale(trophyD, (13*4,13*4))
+trophyG = pygame.image.load('Art/house/geotrophy.png')
+trophyG = pygame.transform.scale(trophyG, (13*4,13*4))
+trophyM = pygame.image.load('Art/house/mattrophy.png')
+trophyM = pygame.transform.scale(trophyM, (13*4,13*4))
+newsPaper = pygame.image.load('Art/house/avis.png')
+newsPaper = pygame.transform.scale(newsPaper, (146,88))
+
+def player(x,y, bg_movement):
+    gameDisplay.fill(black)
+    gameDisplay.blit(bgImg,(((displayWidth/2)-(gameWidth/2)),bg_movement))
+    gameDisplay.blit(playerImg,(x,y))
+    if (controlhelp < 40):
+        gameDisplay.blit(controlsHelpImg,(((displayWidth/2)-(gameWidth/2)),gameHeight/100*50))
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
+def message_display(text, count):
+    if count < 30:
+        largeText = pygame.font.Font('arial.ttf',50)
+        TextSurf, TextRect = text_objects(text, largeText)
+        TextRect.center = ((displayWidth/2),(gameHeight/2))
+        gameDisplay.blit(TextSurf, TextRect)
+
+def cannin_message(text):
+    largeText = pygame.font.Font('arial.ttf',50)
+    TextSurf, TextRect = text_objects(text, largeText)
+    TextRect.center = ((displayWidth/100*10),(displayHeight/100*7))
+    gameDisplay.blit(TextSurf, TextRect)
+
+def store_message(text, number):
+    largeText = pygame.font.Font('arial.ttf',50)
+    TextSurf, TextRect = text_objects(text, largeText)
+    if number == 1:
+        TextRect.center = ((displayWidth/100*30),(displayHeight/100*5))
+    if number == 2:
+        TextRect.center = ((displayWidth/100*30),(displayHeight/100*15))
+    if number == 3:
+        TextRect.center = ((displayWidth/100*50),(displayHeight/100*50))
+    gameDisplay.blit(TextSurf, TextRect)
+
+def element(change_movement, progress):
+    gameDisplay.blit(tunnelImg,(((displayWidth/2)-(gameWidth/2)),change_movement))
+    gameDisplay.blit(topGoalLineImg,((((displayWidth/2)-(gameWidth/2))+10),10))
+    gameDisplay.blit(topGoalLineCanninImg,((((displayWidth/2)-(gameWidth/2))+10 + progress),30))
+    gameDisplay.blit(carrotOneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+    if tunneldone == 1:
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+    gameDisplay.blit(carrotTwoImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
+    if tunneldone == 2:
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
+    gameDisplay.blit(carrotThreeImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*92)),10))
+    if tunneldone == 3:
+        #Level succes
+        gameDisplay.blit(carrotOneDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*28)),10))
+        gameDisplay.blit(carrotTwoDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)),10))
+        gameDisplay.blit(carrotThreeDoneImg,((((displayWidth/2)-(gameWidth/2))+(gameWidth/100*92)),10))
+
+def crash():
+    message_display('Du døde', 1)
+    openMenu()
+
+def pause():
+    message_display('Paused', 1)
+
+def tunneltext_objects(text, font):
+    tunneltextSurface = font.render(text, True, black)
+    return tunneltextSurface, tunneltextSurface.get_rect()
+
+def tunnelmessage_display(text, movement, textnumber):
+    if textnumber == 1:
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*17)
+        ycoordinate = movement+(displayHeight/100*5)
+        if len(text) > 5:
+            textSize = 15
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*22)
+        elif len(text) > 12:
+            textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*18)
+        else:
+            textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*20)
+    if textnumber == 2:
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*38)
+        ycoordinate = movement+(displayHeight/100*5)
+        if len(text) > 5:
+            textSize = 15
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*42)
+        elif len(text) > 12:
+            textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+        else:
+            textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*40)
+    if textnumber == 3:
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)
+        ycoordinate = movement+(displayHeight/100*5)
+        if len(text) > 5:
+            textSize = 15
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*62)
+        elif len(text) > 12:
+            textSize = 10
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*60)
+        else:
+            textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*57)
+    if textnumber == 4:
+        xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*76)
+        ycoordinate = movement+(displayHeight/100*5)
+        if len(text) > 5:
+            textSize = 15
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*78)
+        elif len(text) > 12:
+            textSize = 10
+        else:
+            textSize = 20
+            xcoordinate = ((displayWidth/2)-(gameWidth/2))+(gameWidth/100*77)
+    if textnumber == 5:
+        xcoordinate = (displayWidth/2)
+        ycoordinate = movement+(displayHeight/100*15)
+        if len(text) < 10 and len(text) < 24:
+            textSize = 35
+            xcoordinate = (displayWidth/2)
+        elif len(text) < 25:
+            textSize = 20
+        else:
+            textSize = 15
+    tunnelLargeText = pygame.font.Font('arial.ttf',textSize)
+    tunnelTextSurf, tunnelTextRect = text_objects(text, tunnelLargeText)
+    tunnelTextRect.center = (xcoordinate,ycoordinate)
+    gameDisplay.blit(tunnelTextSurf, tunnelTextRect)
+
+def houseLevel():
+    x = (displayWidth/100) * 80
+    y = (displayHeight/100) * 65
+    global playerImg
+    global houseActive
+    global carrotsTotal
+    global levelReached
+    houseActive = True
+    playerImg = pygame.transform.scale(playerImg, (128, 128))
+    isSelecting = False
+    selectedSkin = playerImg
+    indexSkin = 0
+    skinArray = [skinDefault, skinGold, skinOrange, skinRed]
+    priceArray = [0, 50, 25, 9]
+    ownedArray = [True, False, False, False]
+    nameArray = ["Gode Gamle","Guld Cannin", "Gulerodsjäger", "Spider Cannin"]
+    x_dir = 0
+
+
+    while houseActive:
+        gameDisplay.fill(black)
+        gameDisplay.blit(houseImg,(0, 0))
+        if(levelReached > 1):
+            gameDisplay.blit(trophyD, ((displayWidth/100)*65,(displayHeight/100)*21))
+        if(levelReached > 2):
+            gameDisplay.blit(trophyG, ((displayWidth/100)*70,(displayHeight/100)*21))
+        if(levelReached > 3):
+            gameDisplay.blit(trophyM, ((displayWidth/100)*75,(displayHeight/100)*21))
+            gameDisplay.blit(newsPaper, ((displayWidth/100)*45,(displayHeight/100)*25))
+        gameDisplay.blit(playerImg, (x,y))
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        cannin_message(str(carrotsTotal))
+
+        #Handle inputs
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameExit = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    if(x >= 0):
+                        x_dir = -40
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    x_dir = 40
+                if event.key == pygame.K_UP and isSelecting == True:
+                    if(indexSkin < len(skinArray)-1):
+                        indexSkin += 1
+                    else:
+                        indexSkin = 0
+                    selectedSkin = skinArray[indexSkin]
+                if event.key == pygame.K_DOWN and isSelecting == True:
+                    if(indexSkin > 0):
+                        indexSkin -= 1
+                    else:
+                        indexSkin = len(skinArray)-1
+                    selectedSkin = skinArray[indexSkin]
+                if event.key == pygame.K_RETURN and isSelecting == True:
+                    if ownedArray[indexSkin] == True:
+                        playerImg = pygame.transform.scale(selectedSkin, (128, 128))
+                    elif priceArray[indexSkin] <= carrotsTotal:
+                        carrotsTotal -= priceArray[indexSkin]
+                        ownedArray[indexSkin] = True
+                        playerImg = pygame.transform.scale(selectedSkin, (128, 128))
+                    else:
+                        print("You dont have enough carrots for this outfit", carrotsTotal)
+                        store_message("Du mangler gulerødder", 3)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
+                    x_dir = 0
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
+                    x_dir = 0
+        x += x_dir
+        if(x <= 0):
+            x = 0
+        if(x > (displayWidth/100)*90):
+            houseActive = False
+            gameActive = False
+            print(houseActive)
+        if(x < (displayWidth/100)*25):
+            isSelecting = True
+            tempSkin = pygame.transform.scale(selectedSkin,(128,128))
+            gameDisplay.blit(tempSkin, ((displayWidth/100)*10,(displayHeight/100)*30))
+            gameDisplay.blit(arrowUp, ((displayWidth/100)*12,(displayHeight/100)*15))
+            gameDisplay.blit(arrowDown, ((displayWidth/100)*12,(displayHeight/100)*55))
+            gameDisplay.blit(enterKey, ((displayWidth/100)*20,(displayHeight/100)*33))
+            storestringone = "NAME: " + str(nameArray[indexSkin]) #TODO: Jacob
+            storestringtwo = "PRICE: " + str(priceArray[indexSkin]) #TODO: Jacob
+            store_message(storestringone, 1)
+            store_message(storestringtwo, 2)
+
+        else:
+            isSelecting = False
+            selectedSkin = playerImg
+        if(houseActive == False):
+            break
+
+
+        pygame.display.update()
+        clock.tick(10)
+    openMenu()
+
+def openMenu():
+    global gameActive
+    global gameLevel
+    global levelReached
+    global developerMode
+    global carrotsTotal
+    global playerImg
+    global levelSelected
+    gameActive = False #SKAL FJERNES NÅR MENU SKAL FIKSES
+    playerImg = pygame.transform.scale(playerImg,(64,64))
+    while not gameActive:
+        gameDisplay.fill(black)
+        gameDisplay.blit(menuBackground,(0, 0))
+        gameDisplay.blit(playerImg, (55*(displayWidth/768)+(197*levelSelected)*(displayWidth/768),displayHeight*0.56))
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        cannin_message(str(carrotsTotal))
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.quit()
+                    pygame.quit()
+                    sys.exit(0)
+                if event.key == pygame.K_m:
+                    developerMode = True
+                    carrotsTotal = 200
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    if levelSelected>0:
+                        levelSelected -= 1
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    if levelSelected < 3 and levelSelected<levelReached:
+                        levelSelected += 1
+                if event.key == pygame.K_RETURN:
+                    gameLevel = levelSelected
+                    gameActive = True
+        if (developerMode == True):
+            levelReached = 4
+        pygame.display.update()
+        clock.tick(10)
+    if (levelSelected == 0):
+        print("Enter house")
+        houseLevel()
+    else:
+        game_loop()
+
+def game_loop():
+    print("play game")
+    x = (displayWidth * 0.50 - (playerWidth/2))
+    y = (gameHeight * 0.85)
+    change_movement = -200 - (gameHeight - y)
+    progressTick = 0
+    bg_movement = 0
+    generateGate = True
+    level = 1
+    gateCount = 0
+    x_dir = 0
+    global textQ
+    global choicesQ
+    global answerQ
+    global gameLevel
+    global carrotsTotal
+    global levelReached
+    global gameLevel
+    global carrot
+
+    tunnelCheck = False
+
+    gameExit = False
+    hasCrashed = False
+
+    while not gameExit:
+        global controlhelp
+        global pauseGame
+        gameDisplay.blit(carrot, ((displayWidth/100)*2,(displayHeight/100)*2))
+        cannin_message(str(carrotsTotal))
+        controlhelp += 1
+        if(progressTick<gameWidth-40 and pauseGame == False and hasCrashed == False):
+            progressTick += ((gameHeight*3)/5)/(gameWidth)
+        #Do once
+        if (generateGate == True):
+            global gameLevel
+            if (gameLevel == 1):
+                textQ, choicesQ, answerQ = DanishQ()
+            elif (gameLevel == 2):
+                textQ, choicesQ, answerQ = GeographyQ()
+            elif (gameLevel == 3):
+                textQ, choicesQ, answerQ = MathQ()
+            generateGate = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameExit = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
+                    if(x > displayWidth/2 - gameWidth/2):
+                        x_dir = -15
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
+                    if(x < displayWidth/2 + gameWidth/2 - playerWidth):
+                        x_dir = 15
+                if event.key == pygame.K_p:
+                    if (pauseGame == True):
+                        pauseGame = False
+                    else:
+                        pauseGame = True
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.quit()
+                    pygame.quit()
+                    sys.exit(0)
+                if event.key == pygame.K_m:
+                    pauseGame = True
+                    openMenu()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a and pauseGame == False or event.key == pygame.K_LEFT and pauseGame == False:
+                    x_dir = 0
+                if event.key == pygame.K_d and pauseGame == False or event.key == pygame.K_RIGHT and pauseGame == False:
+                    x_dir = 0
+
+        x += x_dir
+        if x > (displayWidth * 0.5 + gameWidth * 0.5 - playerWidth):
+            x = (displayWidth * 0.5 + gameWidth * 0.5  - playerWidth)
+        elif x < (displayWidth * 0.5 - gameWidth * 0.5):
+            x = (displayWidth * 0.5 - gameWidth * 0.5)
+
+
+        if y < change_movement+tunnel_height and tunnelCheck == False:
+            tunnelCheck = True
+            tunnelChosen = None
+            print((displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)))
+            if x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(326/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(897/3000*100)):
+                tunnelChosen = 0
+            elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(998/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1513/3000*100)):
+                tunnelChosen = 1
+            elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(1582/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2053/3000*100)):
+                tunnelChosen = 2
+            elif x+(playerWidth/2) > (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2150/3000*100)) and x+(playerWidth/2) < (displayWidth/2)-(gameWidth/2)+(gameWidth/100*(2622/3000*100)):
+                tunnelChosen = 3
+            print("Gate: ", tunnelChosen)
+            global tunneldone
+            if(tunnelChosen == answerQ):
+                tunneldone += 1
+                carrotsTotal += 1
+                print("Du har gennemført: ", tunneldone)
+            else:
+                print("Chose wrong gate: Call crash")
+                hasCrashed = True
+        if(tunnelCheck == True and hasCrashed == False):
+            gateCount += 1
+
+        #Updates player and game screen
+        if (hasCrashed == False and pauseGame == False):
+            change_movement += 5
+
+        if (pauseGame == False):
+            player(x,y, bg_movement)
+            element(change_movement, progressTick)
+        if tunneldone == 1 and gameLevel == 1:
+            global removecount
+            removecount +=1
+            message_display("Din første gulerod! :)", removecount)
+        elif tunneldone == 3:
+            global levelcompletedcount
+            levelcompletedcount +=1
+            levelReached = gameLevel+1
+            message_display("Level fuldført!", levelcompletedcount)
+
+        if (pauseGame == False):
+            tunnelmessage_display(choicesQ[0], change_movement, 1)
+            tunnelmessage_display(choicesQ[1], change_movement, 2)
+            tunnelmessage_display(choicesQ[2], change_movement, 3)
+            tunnelmessage_display(choicesQ[3], change_movement, 4)
+            tunnelmessage_display(textQ, change_movement, 5)
+        if(levelcompletedcount > 30):
+            global gameActive
+            gameActive = False
+            levelcompletedcount = 0
+            tunneldone = 0
+
+        if (change_movement > displayHeight and tunneldone != 3):
+            gateCount = 0
+            tunnelCheck = False
+            generateGate = True
+            change_movement = -200
+        if hasCrashed == True:
+            crash()
+        if pauseGame == True:
+            pause()
+        if (gameActive == True):
+            pygame.display.update()
+            clock.tick(10)
+        else:
+            openMenu()
 
 #Only works with 4 choices atm
 def DanishQ(choices = 4):
-    f = open("questions\danish_wordclass.txt","r")
+    print(platform.system())
+    if platform.system() == "Windows":
+        f = open("questions\danish_wordclass.txt","r")
+    else:
+        f = open("questions/danish_wordclass.txt","r")
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
@@ -27,7 +558,10 @@ def DanishQ(choices = 4):
     a = qList[index].split(",")[1]
 
     #Almost same proces for the list of answers
-    g = open("questions\danish_wordclass_a.txt","r")
+    if platform.system() == "Windows":
+        g = open("questions\danish_wordclass_a.txt","r")
+    else:
+        g = open("questions/danish_wordclass_a.txt","r")
     aList = []
     for line in g:
         aList.append(line.rstrip())
@@ -46,7 +580,11 @@ def DanishQ(choices = 4):
 
 #Works with any number of choices
 def GeographyQ(choices = 4):
-    f = open("questions\geography_capitals.txt","r")
+    if platform.system() == "Windows":
+        f = open("questions\geography_capitals.txt","r")
+    else:
+        f = open("questions/geography_capitals.txt","r")
+
     qList = [] #Makes an empty array
     for line in f: #Splits each line into a value in our array
         #Insert each line as value and strips new line
@@ -60,7 +598,8 @@ def GeographyQ(choices = 4):
     while(len(c)<choices):
         tempIndex = random.randint(0, len(qList)-1)
         if(tempIndex != index):
-            c.append(qList[tempIndex].split(",")[1])
+            if(qList[tempIndex].split(",")[1] not in c):
+                c.append(qList[tempIndex].split(",")[1])
     random.shuffle(c)
     t = "Hvad er hovedstaden i " + q + "?"
     for i in range(choices):
@@ -70,6 +609,7 @@ def GeographyQ(choices = 4):
 
 #Works only with 4 choices
 def MathQ():
+    print("MathQ called")
     temp1 = random.randint(0,30)
     temp2 = random.randint(0,4-math.ceil(temp1/10))
     if (temp2 == 1):
@@ -79,17 +619,18 @@ def MathQ():
     print(temp1 , "   " ,temp2)
     a = temp1 * temp2
     t = str(temp1) + " * " + str(temp2) + " = ?"
+    print(t)
     c = []
     c.append(a)
-    c.append(random.randint(1, abs(a-1)))
-    c.append(random.randint(a+2, (a+1)*2+temp1+2))
-    c.append(temp1+temp2)
-    if(c[3]==1):
-        c[3] = c[2]*3
+    c.append(str(random.randint(1, abs(a-1))))
+    c.append(str(random.randint(a+2, (a+1)*2+temp1+2)))
+    c.append(str(temp1+temp2))
     random.shuffle(c)
     for i in range(4):
         if (a==c[i]):
             a = i
+            c[i] = str(c[i])
+
     return(t, c, a)
 
-input()
+openMenu()
