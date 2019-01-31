@@ -1,5 +1,4 @@
 # CanninArena2
-A sequel to the famous game CanninArena by Legestuedios
 ## Getting Started
 These instructions will help you download and run the game.
 ### Download
